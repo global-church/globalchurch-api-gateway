@@ -15,3 +15,5 @@ partners:
       lifecycle: "90d"                  # how often to rotate keys (parsed by our action)
       overlapWindow: "7d"               # grace period where old+new key both work
     notes: "Created initially in the portal; managed by GitOps going forward."
+
+# Added comment to trigger PR Preview
