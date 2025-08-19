@@ -1,0 +1,17 @@
+# config/partners.yaml
+# Canonical list of API partners to manage via GitHub.
+# This file will drive key issuance & rotation automation in the next steps.
+
+partners:
+  - subject: "partner-sample"           # must match the Consumer "subject" in Zuplo
+    displayName: "Sample Partner"
+    contactEmail: "YOUR_EMAIL@EXAMPLE.COM"
+    plan: "standard"                    # free|standard|pro (arbitrary label for your use)
+    rateLimit:
+      requestsPerMinute: 60             # keep in sync with policies.json (global cap)
+      burst: 60
+    tags: ["demo", "internal-test"]     # optional labels you’ll reuse in automation
+    rotate:
+      lifecycle: "90d"                  # how often to rotate keys (parsed by our action)
+      overlapWindow: "7d"               # grace period where old+new key both work
+    notes: "Created initially in the portal; managed by GitOps going forward."
