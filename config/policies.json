@@ -1,0 +1,56 @@
+{
+  "policies": [
+    {
+      "name": "require-api-key",
+      "policyType": "api-key-inbound",
+      "handler": {
+        "export": "ApiKeyInboundPolicy",
+        "module": "$import(@zuplo/runtime)",
+        "options": {
+          "allowUnauthenticatedRequests": false,
+          "cacheTtlSeconds": 60
+        }
+      }
+    },
+    {
+      "name": "ratelimit-per-partner",
+      "policyType": "ratelimit-inbound",
+      "handler": {
+        "export": "RateLimitInboundPolicy",
+        "module": "$import(@zuplo/runtime)",
+        "options": {
+          "requests": 300,
+          "windowInSeconds": 60,
+          "burst": 150,
+          "key": "${context.consumer?.subject}"
+        }
+      }
+    },
+    {
+      "name": "inject-partner-id",
+      "policyType": "set-headers-inbound",
+      "handler": {
+        "export": "SetHeadersInboundPolicy",
+        "module": "$import(@zuplo/runtime)",
+        "options": {
+          "headers": [
+            { "name": "x-partner-subject", "value": "${context.consumer?.subject}" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "inject-supabase-authorization",
+      "policyType": "set-headers-inbound",
+      "handler": {
+        "export": "SetHeadersInboundPolicy",
+        "module": "$import(@zuplo/runtime)",
+        "options": {
+          "headers": [
+            { "name": "Authorization", "value": "Bearer $env(SUPABASE_ANON_JWT)" }
+          ]
+        }
+      }
+    }
+  ]
+}
