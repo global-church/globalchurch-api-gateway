@@ -31,15 +31,23 @@ async function syncPartners() {
 
     // Loop through each partner defined in the YAML file
     for (const partner of partners) {
+      // Convert the array of tags from YAML into an object for the API
+      const partnerTags = partner.tags ? partner.tags.reduce((acc, tag) => {
+        acc[tag] = "true";
+        return acc;
+      }, {}) : {};
+      
       const consumerData = {
         name: partner.subject,
         description: partner.displayName,
         managers: [partner.contactEmail],
         metadata: {
+          rateLimit: partner.rateLimit,
           plan: partner.plan,
         },
         tags: {
           source: 'gitops',
+          ...partnerTags,
         },
       };
 
