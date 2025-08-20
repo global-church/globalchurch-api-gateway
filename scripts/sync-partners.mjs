@@ -42,7 +42,7 @@ async function syncPartners() {
         description: partner.displayName,
         managers: [partner.contactEmail],
         metadata: {
-          rateLimit: partner.rateLimit,
+          ...partner.rateLimit,
           plan: partner.plan,
         },
         tags: {
