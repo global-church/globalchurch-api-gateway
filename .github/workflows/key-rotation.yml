@@ -11,7 +11,7 @@ on:
 
 jobs:
   rotate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,5 +28,5 @@ jobs:
         run: node scripts/rotate-keys.mjs
         env:
           ZUPLO_API_KEY: ${{ secrets.ZUPLO_API_KEY }}
-          ZUPLO_BUCKET_ID: ${{ secrets.ZUPLO_BUCKET_ID }}
+          ZUPLO_BUCKET_ID_PRODUCTION: ${{ secrets.ZUPLO_BUCKET_ID_PRODUCTION }}
           ZUPLO_ACCOUNT_NAME: ${{ secrets.ZUPLO_ACCOUNT_NAME }}
