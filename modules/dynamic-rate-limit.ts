@@ -15,9 +15,9 @@ export function getLimitFromMetadata(
 
   if (consumer?.metadata?.rateLimit) {
     // If the consumer has rate limit metadata, use it
-    context.log.info(`Applying custom rate limit for consumer: ${consumer.name}`);
+    context.log.info(`Applying custom rate limit for consumer: ${consumer.subject}`);
     return {
-      key: consumer.name, // The unique identifier for this partner's rate limit bucket
+      key: consumer.subject, // The unique identifier for this partner's rate limit bucket
       requestsAllowed: consumer.metadata.rateLimit.requestsPerMinute,
       // Note: The built-in policy does not support dynamic burst,
       // so we only override requestsAllowed. Burst will use the static
