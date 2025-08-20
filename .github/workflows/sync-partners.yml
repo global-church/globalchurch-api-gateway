@@ -34,3 +34,4 @@ jobs:
         run: node scripts/sync-partners.mjs
         env:
           ZUPLO_API_KEY: ${{ secrets.ZUPLO_API_KEY }}
+          ZUPLO_BUCKET_ID_PRODUCTION: ${{ secrets.ZUPLO_BUCKET_ID_PRODUCTION }}
