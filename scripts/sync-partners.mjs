@@ -4,10 +4,15 @@ import yaml from 'js-yaml';
 
 // Get the Zuplo API key from the environment variables
 const ZUPLO_API_KEY = process.env.ZUPLO_API_KEY;
+const ZUPLO_BUCKET_ID_PRODUCTION = process.env.ZUPLO_BUCKET_ID_PRODUCTION;
+
 if (!ZUPLO_API_KEY) {
-  console.error('Error: ZUPLO_API_KEY environment variable is not set.');
+  console.error('Error: ZUPLO_API_KEY or ZUPLO_BUCKET_ID_PRODUCTION environment variables are not set.');
   process.exit(1);
 }
+
+// Construct the correct API endpoint URL
+const API_URL = `https://api.zuplo.com/v1/buckets/${ZUPLO_BUCKET_ID_PRODUCTION}/consumers`;
 
 async function syncPartners() {
   try {
@@ -38,7 +43,7 @@ async function syncPartners() {
       };
 
       // Use the Zuplo Management API to create/update the consumer
-      const response = await fetch('https://api.zuplo.com/v1/consumers', {
+      const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
