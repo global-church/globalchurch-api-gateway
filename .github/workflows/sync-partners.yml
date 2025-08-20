@@ -35,3 +35,4 @@ jobs:
         env:
           ZUPLO_API_KEY: ${{ secrets.ZUPLO_API_KEY }}
           ZUPLO_BUCKET_ID_PRODUCTION: ${{ secrets.ZUPLO_BUCKET_ID_PRODUCTION }}
+          ZUPLO_ACCOUNT_NAME: ${{ secrets.ZUPLO_ACCOUNT_NAME }}
