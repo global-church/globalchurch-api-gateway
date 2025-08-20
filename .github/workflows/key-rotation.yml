@@ -1,0 +1,32 @@
+# .github/workflows/key-rotation.yml
+name: Rotate Expired Zuplo API Keys
+
+on:
+  # This is a cron schedule. It runs the workflow every day at 10:00 UTC.
+  # You can change the schedule as needed.
+  schedule:
+    - cron: '0 10 * * *'
+  # Allows you to also run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  rotate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check for and rotate expired keys
+        run: node scripts/rotate-keys.mjs
+        env:
+          ZUPLO_API_KEY: ${{ secrets.ZUPLO_API_KEY }}
+          ZUPLO_BUCKET_ID: ${{ secrets.ZUPLO_BUCKET_ID }}
+          ZUPLO_ACCOUNT_NAME: ${{ secrets.ZUPLO_ACCOUNT_NAME }}
