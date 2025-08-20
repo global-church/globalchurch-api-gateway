@@ -32,7 +32,7 @@ async function syncPartners() {
     // Loop through each partner defined in the YAML file
     for (const partner of partners) {
       const consumerData = {
-        subject: partner.subject,
+        name: partner.subject,
         description: partner.displayName,
         managers: [partner.contactEmail],
         metadata: {
