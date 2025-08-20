@@ -19,9 +19,9 @@
         "export": "RateLimitInboundPolicy",
         "module": "$import(@zuplo/runtime)",
         "options": {
-          "requests": $number(${context.consumer.metadata.requestsPerMinute}),
+          "requests": "{context.consumer.metadata.requestsPerMinute}",
           "windowInSeconds": 60,
-          "burst": $number(${context.consumer.metadata.burst}),
+          "burst": "${context.consumer.metadata.burst}",
           "key": "${context.consumer?.subject}"
         }
       }
@@ -47,7 +47,10 @@
         "module": "$import(@zuplo/runtime)",
         "options": {
           "headers": [
-            { "name": "Authorization", "value": "Bearer $env(SUPABASE_ANON_JWT)" }
+            { 
+              "name": "Authorization", 
+              "value": "Bearer $env(SUPABASE_ANON_JWT)" 
+            }
           ]
         }
       }
