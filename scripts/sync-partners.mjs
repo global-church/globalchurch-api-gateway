@@ -13,7 +13,7 @@ if (!ZUPLO_API_KEY || !ZUPLO_BUCKET_ID_PRODUCTION || !ZUPLO_ACCOUNT_NAME) {
 }
 
 // Construct the correct API endpoint URL
-const API_URL = `https://dev.zuplo.com/v1/accounts/${ZUPLO_ACCOUNT_NAME}/key-buckets/${ZUPLO_BUCKET_ID_PRODUCTION}/consumers`;
+const API_URL = `https://dev.zuplo.com/v1/accounts/${ZUPLO_ACCOUNT_NAME}/key-buckets/${ZUPLO_BUCKET_ID_PRODUCTION}/consumers?with-api-key=true`;
 
 async function syncPartners() {
   try {
