@@ -15,3 +15,12 @@ partners:
       lifecycle: "90d"                  # how often to rotate keys (parsed by our action)
       overlapWindow: "7d"               # grace period where old+new key both work
     notes: "Created initially in the portal; managed by GitOps going forward."
+
+  - subject: "new-cool-partner"
+    displayName: "New Cool Partner Inc."
+    contactEmail: "tech@newcoolpartner.com"
+    plan: "standard"
+    rateLimit:
+      requestsPerMinute: 100
+      burst: 50
+    tags: ["demo", "internal-test"]
