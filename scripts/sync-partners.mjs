@@ -1,0 +1,69 @@
+// scripts/sync-partners.mjs
+import fs from 'fs';
+import yaml from 'js-yaml';
+
+// Get the Zuplo API key from the environment variables
+const ZUPLO_API_KEY = process.env.ZUPLO_API_KEY;
+if (!ZUPLO_API_KEY) {
+  console.error('Error: ZUPLO_API_KEY environment variable is not set.');
+  process.exit(1);
+}
+
+async function syncPartners() {
+  try {
+    // Load and parse the partners.yaml file
+    const fileContents = fs.readFileSync('config/partners.yaml', 'utf8');
+    const partnersData = yaml.load(fileContents);
+    const partners = partnersData.partners;
+
+    if (!partners || partners.length === 0) {
+      console.log('No partners found in config/partners.yaml. Exiting.');
+      return;
+    }
+
+    console.log(`Found ${partners.length} partner(s). Syncing with Zuplo...`);
+
+    // Loop through each partner defined in the YAML file
+    for (const partner of partners) {
+      const consumerData = {
+        subject: partner.subject,
+        description: partner.displayName,
+        managers: [partner.contactEmail],
+        metadata: {
+          plan: partner.plan,
+        },
+        tags: {
+          source: 'gitops',
+        },
+      };
+
+      // Use the Zuplo Management API to create/update the consumer
+      const response = await fetch('https://api.zuplo.com/v1/consumers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Authenticate with the API Key
+          authorization: `Bearer ${ZUPLO_API_KEY}`,
+        },
+        body: JSON.stringify(consumerData),
+      });
+
+      if (!response.ok) {
+        // If the API call fails, log the error
+        const errorBody = await response.text();
+        console.error(`Error syncing partner "${partner.subject}": ${response.status} ${response.statusText}`);
+        console.error('Response body:', errorBody);
+        // Optional: exit with an error code to fail the GitHub Action
+        // process.exit(1);
+      } else {
+        console.log(`Successfully synced partner "${partner.subject}".`);
+      }
+    }
+    console.log('Partner sync complete!');
+  } catch (error) {
+    console.error('An unexpected error occurred:', error);
+    process.exit(1);
+  }
+}
+
+syncPartners();
