@@ -5,14 +5,15 @@ import yaml from 'js-yaml';
 // Get the Zuplo API key from the environment variables
 const ZUPLO_API_KEY = process.env.ZUPLO_API_KEY;
 const ZUPLO_BUCKET_ID_PRODUCTION = process.env.ZUPLO_BUCKET_ID_PRODUCTION;
+const ZUPLO_ACCOUNT_NAME = process.env.ZUPLO_ACCOUNT_NAME;
 
-if (!ZUPLO_API_KEY) {
-  console.error('Error: ZUPLO_API_KEY or ZUPLO_BUCKET_ID_PRODUCTION environment variables are not set.');
+if (!ZUPLO_API_KEY || !ZUPLO_BUCKET_ID_PRODUCTION || !ZUPLO_ACCOUNT_NAME) {
+  console.error('Error: ZUPLO_API_KEY, ZUPLO_BUCKET_ID_PRODUCTION, or ZUPLO_ACCOUNT_NAME environment variables are not set.');
   process.exit(1);
 }
 
 // Construct the correct API endpoint URL
-const API_URL = `https://api.zuplo.com/v1/buckets/${ZUPLO_BUCKET_ID_PRODUCTION}/consumers`;
+const API_URL = `https://dev.zuplo.com/v1/accounts/${ZUPLO_ACCOUNT_NAME}/key-buckets/${ZUPLO_BUCKET_ID_PRODUCTION}/consumers`;
 
 async function syncPartners() {
   try {
