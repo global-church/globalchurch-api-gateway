@@ -9,6 +9,7 @@
     "docs": "npm run dev --workspace docs"
   },
   "dependencies": {
+    "js-yaml": "^4.1.0",
     "zuplo": "^6"
   },
   "devDependencies": {
