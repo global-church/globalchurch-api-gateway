@@ -24,4 +24,4 @@ partners:
       requestsPerMinute: 100
       burst: 50
     tags: ["demo", "internal-test"]
-    # Adding a comment to re-trigger the GitHub Action (run #8).
+    # Adding a comment to re-trigger the GitHub Action (run #9).
