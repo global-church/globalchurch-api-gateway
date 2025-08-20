@@ -19,9 +19,9 @@
         "export": "RateLimitInboundPolicy",
         "module": "$import(@zuplo/runtime)",
         "options": {
-          "requests": 300,
+          "requests": "${context.consumer.metadata.rateLimit.requestsPerMinute}",
           "windowInSeconds": 60,
-          "burst": 150,
+          "burst": "${context.consumer.metadata.rateLimit.burst}",
           "key": "${context.consumer?.subject}"
         }
       }
