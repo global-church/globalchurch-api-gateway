@@ -14,15 +14,20 @@
     },
     {
       "name": "ratelimit-per-partner",
-      "policyType": "ratelimit-inbound",
+      "policyType": "rate-limit-inbound",
       "handler": {
         "export": "RateLimitInboundPolicy",
         "module": "$import(@zuplo/runtime)",
         "options": {
-          "requests": "{context.consumer.metadata.requestsPerMinute}",
-          "windowInSeconds": 60,
-          "burst": "${context.consumer.metadata.burst}",
-          "key": "${context.consumer?.subject}"
+          "rateLimitBy": "function",
+          "requestsAllowed": 200,
+          "timeWindowMinutes": 1,
+          "identifier": {
+            "module": "$import(./modules/dynamic-rate-limit)",
+            "export": "getLimitFromMetadata"
+          },
+          "throwOnFailure": true,
+          "mode": "async"
         }
       }
     },
