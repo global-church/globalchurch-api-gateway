@@ -5,7 +5,7 @@
 partners:
   - subject: "partner-sample"           # must match the Consumer "subject" in Zuplo
     displayName: "Sample Partner"
-    contactEmail: "YOUR_EMAIL@EXAMPLE.COM"
+    contactEmail: "tsikute@gmail.com"
     plan: "standard"                    # free|standard|pro (arbitrary label for your use)
     rateLimit:
       requestsPerMinute: 60             # keep in sync with policies.json (global cap)
@@ -18,7 +18,7 @@ partners:
 
   - subject: "new-cool-partner"
     displayName: "New Cool Partner Inc."
-    contactEmail: "tech@newcoolpartner.com"
+    contactEmail: "trent.sikute@global.church"
     plan: "standard"
     rateLimit:
       requestsPerMinute: 100
