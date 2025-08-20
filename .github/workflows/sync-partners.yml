@@ -1,0 +1,36 @@
+# .github/workflows/sync-partners.yml
+name: Sync Zuplo API Key Consumers
+
+# Run this workflow automatically on pushes to the main branch
+# that change the partners.yaml file.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'config/partners.yaml'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the code from the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js so we can run our script
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use a recent LTS version of Node.js
+
+      # Step 3: Install dependencies from package.json
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run the sync script
+      # The ZUPLO_API_KEY is securely passed from GitHub Secrets
+      - name: Sync partners with Zuplo
+        run: node scripts/sync-partners.mjs
+        env:
+          ZUPLO_API_KEY: ${{ secrets.ZUPLO_API_KEY }}
