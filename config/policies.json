@@ -22,7 +22,7 @@
           "requests": "$number(${context.consumer.metadata.requestsPerMinute})",
           "windowInSeconds": 60,
           "burst": "$number(${context.consumer.metadata.burst})",
-          "key": "${context.consumer?.subject}"
+          "key": "${context.request.user.sub}"
         }
       }
     },
