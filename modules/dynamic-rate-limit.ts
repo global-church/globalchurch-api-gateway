@@ -18,14 +18,15 @@ export function getLimitFromMetadata(
     
   if (request.user?.data.rateLimit) {
     // If the consumer has rate limit metadata, use it
-    context.log.info(`Applying custom rate limit for consumer: ${request.user?.sub}`);
+    context.log.info(
+      `Applying custom rate limit for consumer: ${request.user?.sub}`
+    );
     return {
       key: request.user?.sub, // The unique identifier for this partner's rate limit bucket
       requestsAllowed: request.user?.data.rateLimit,
       timeWindowMinutes: 1,
     };
   }
-}
 
   // Fallback for any requests that don't have a consumer or metadata
   context.log.warn(`No custom rate limit found, using fallback.`);
