@@ -20,3 +20,9 @@ partners:
     contactEmail: "paul.martel@global.church"
     plan: "standard"
     rateLimit: 100
+
+  - subject: "marcus-smith-api-test"
+    displayName: "Marcus's Dev Test API"
+    contactEmail: "marcus@thesmith.team"
+    plan: "standard"
+    rateLimit: 52
