@@ -16,7 +16,7 @@ partners:
     displayName: "New Cool Partner Inc."
     contactEmail: "trent.sikute@global.church"
     plan: "standard"
-    #rateLimit:
+    rateLimit: 49
     #  requestsPerMinute: 100
     #tags: ["demo", "internal-test"]
     
