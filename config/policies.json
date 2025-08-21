@@ -20,7 +20,7 @@
         "module": "$import(@zuplo/runtime)",
         "options": {
           "rateLimitBy": "function",
-          "identifier" {
+          "identifier": {
             "module": "$import(./modules/dynamic-rate-limit)",
             "export": "getLimitFromMetadata"
           }
