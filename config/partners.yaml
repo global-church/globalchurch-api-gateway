@@ -7,21 +7,17 @@ partners:
     displayName: "Sample Partner"
     contactEmail: "tsikute@gmail.com"
     plan: "standard"                    # free|standard|pro (arbitrary label for your use)
-    rateLimit:
-      requestsPerMinute: 60             # keep in sync with policies.json (global cap)
-      burst: 60
-    tags: ["demo", "internal-test"]     # optional labels you’ll reuse in automation
-    rotate:
-      lifecycle: "90d"                  # how often to rotate keys (parsed by our action)
-      overlapWindow: "7d"               # grace period where old+new key both work
-    notes: "Created initially in the portal; managed by GitOps going forward."
+    #rateLimit:                          #per-partner rate-limits are currently turned off (possible put complex to set up)
+    #  requestsPerMinute: 50             
+    #tags: ["demo", "internal-test"]     # optional labels you’ll reuse in automation
+    #notes: "Created initially in the portal; managed by GitOps going forward."
 
   - subject: "new-cool-partner"
     displayName: "New Cool Partner Inc."
     contactEmail: "trent.sikute@global.church"
     plan: "standard"
-    rateLimit:
-      requestsPerMinute: 100
-      burst: 50
-    tags: ["demo", "internal-test"]
+    #rateLimit:
+    #  requestsPerMinute: 100
+    #tags: ["demo", "internal-test"]
+    
     # Adding a comment to re-trigger the GitHub Action (run #11).
