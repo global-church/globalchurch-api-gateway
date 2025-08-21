@@ -9,7 +9,7 @@ import {
 
 export function getLimitFromMetadata(
   request: ZuploRequest,
-  context: ZuploContext
+  context: ZuploContext,
   policyName: string,
 ): CustomRateLimitDetails {
   // The 'require-api-key' policy runs first, so the consumer
