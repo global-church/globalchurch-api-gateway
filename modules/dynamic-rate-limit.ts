@@ -14,23 +14,18 @@ export function getLimitFromMetadata(
 ): CustomRateLimitDetails {
   // The 'require-api-key' policy runs first, so the consumer
   // details are available on the context object.
-  const consumer = request.user;
-  context.log.info(
-    //if you can figure out how to properly call the consumer and the consumer's rate-limit policy from the metadata, this should work:
-    `processing consumer '${consumer.sub}' for rate-limit policy '${policyName}'`,    
-  );
-  
-  if (consumer.data.rateLimit) {
+  //const consumer = request.user; //potentially mess with this later if it works
+    
+  if (request.user?.data.rateLimit) {
     // If the consumer has rate limit metadata, use it
-    context.log.info(`Applying custom rate limit for consumer: ${consumer.subject}`);
+    context.log.info(`Applying custom rate limit for consumer: ${request.user?.sub}`);
     return {
-      key: consumer.subject, // The unique identifier for this partner's rate limit bucket
-      requestsAllowed: consumer.metadata.rateLimit.requestsPerMinute,
-      // Note: The built-in policy does not support dynamic burst,
-      // so we only override requestsAllowed. Burst will use the static
-      // value from policies.json.
+      key: request.user?.sub, // The unique identifier for this partner's rate limit bucket
+      requestsAllowed: request.user?.data.rateLimit,
+      timeWindowMinutes: 1,
     };
   }
+}
 
   // Fallback for any requests that don't have a consumer or metadata
   context.log.warn(`No custom rate limit found, using fallback.`);
