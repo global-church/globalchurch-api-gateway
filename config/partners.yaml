@@ -14,3 +14,9 @@ partners:
     contactEmail: "trent.sikute@global.church"
     plan: "standard"
     rateLimit: 49
+
+  - subject: "paul-martel-api-test"
+    displayName: "Paul's Dev Test API"
+    contactEmail: "paul.martel@global.church"
+    plan: "standard"
+    rateLimit: 100
