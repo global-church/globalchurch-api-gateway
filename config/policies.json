@@ -20,7 +20,7 @@
         "module": "$import(@zuplo/runtime)",
         "options": {
           "rateLimitBy": "user",
-          "requestsAllowed": 200,
+          "requestsAllowed": 50,
           "timeWindowMinutes": 1,
           "throwOnFailure": true,
           "mode": "async"
