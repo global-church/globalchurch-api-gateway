@@ -3,21 +3,14 @@
 # This file will drive key issuance & rotation automation in the next steps.
 
 partners:
-  - subject: "partner-sample"           # must match the Consumer "subject" in Zuplo
-    displayName: "Sample Partner"
-    contactEmail: "tsikute@gmail.com"
+  - subject: "partner-sample"           # name assigned to the consumer      
+    displayName: "Sample Partner"       # cosmetic display name
+    contactEmail: "tsikute@gmail.com"   # email address(es) that have access to the consumer's API key (viewable in the dev portal)
     plan: "standard"                    # free|standard|pro (arbitrary label for your use)
-    rateLimit: 50                         #per-partner rate-limits are currently turned off (possible put complex to set up)
-    #  requestsPerMinute: 50             
-    #tags: ["demo", "internal-test"]     # optional labels you’ll reuse in automation
-    #notes: "Created initially in the portal; managed by GitOps going forward."
+    rateLimit: 50                       # the number of API requests the consumer can make per minute
 
   - subject: "new-cool-partner"
     displayName: "New Cool Partner Inc."
     contactEmail: "trent.sikute@global.church"
     plan: "standard"
     rateLimit: 49
-    #  requestsPerMinute: 100
-    #tags: ["demo", "internal-test"]
-    
-    # Adding a comment to re-trigger the GitHub Action (run #13).
