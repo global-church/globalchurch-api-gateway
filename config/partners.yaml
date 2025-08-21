@@ -7,7 +7,7 @@ partners:
     displayName: "Sample Partner"
     contactEmail: "tsikute@gmail.com"
     plan: "standard"                    # free|standard|pro (arbitrary label for your use)
-    #rateLimit:                          #per-partner rate-limits are currently turned off (possible put complex to set up)
+    rateLimit: 50                         #per-partner rate-limits are currently turned off (possible put complex to set up)
     #  requestsPerMinute: 50             
     #tags: ["demo", "internal-test"]     # optional labels you’ll reuse in automation
     #notes: "Created initially in the portal; managed by GitOps going forward."
