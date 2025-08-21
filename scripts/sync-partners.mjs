@@ -42,12 +42,8 @@ async function syncPartners() {
         description: partner.displayName,
         managers: [partner.contactEmail],
         metadata: {
-          ...partner.rateLimit,
+          rateLimit: partner.rateLimit,
           plan: partner.plan,
-        },
-        tags: {
-          source: 'gitops',
-          ...partnerTags,
         },
       };
 
