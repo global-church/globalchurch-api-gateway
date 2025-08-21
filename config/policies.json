@@ -19,7 +19,11 @@
         "export": "RateLimitInboundPolicy",
         "module": "$import(@zuplo/runtime)",
         "options": {
-          "rateLimitBy": "user",
+          "rateLimitBy": "function",
+          "identifier" {
+            "module": "$import(./modules/dynamic-rate-limit)",
+            "export": "getLimitFromMetadata"
+          }
           "requestsAllowed": 200,
           "timeWindowMinutes": 1,
           "throwOnFailure": true,
