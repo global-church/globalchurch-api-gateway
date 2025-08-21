@@ -6,7 +6,7 @@ partners:
   - subject: "partner-sample"           # name assigned to the consumer      
     displayName: "Sample Partner"       # cosmetic display name
     contactEmail: "tsikute@gmail.com"   # email address(es) that have access to the consumer's API key (viewable in the dev portal)
-    plan: "standard"                    # free|standard|pro (arbitrary label for your use)
+    plan: "standard"                    # free|standard|pro - this is an arbitrary placeholder label we can adjust if tiers of API service are offered.
     rateLimit: 50                       # the number of API requests the consumer can make per minute
 
   - subject: "new-cool-partner"
