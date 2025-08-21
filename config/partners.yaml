@@ -26,3 +26,9 @@ partners:
     contactEmail: "marcus@thesmith.team"
     plan: "standard"
     rateLimit: 52
+
+  - subject: "clayton-fike-api-test"
+    displayName: "Clayton's Dev Test API"
+    contactEmail: "clayton.fike@global.church"
+    plan: "standard"  # This is just a placeholder; plans in the future could be issued with different payment tiers
+    rateLimit: 70
