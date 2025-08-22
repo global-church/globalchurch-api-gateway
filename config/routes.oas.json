@@ -34,8 +34,20 @@
               "require-api-key",
               "ratelimit-per-partner",
               "inject-partner-id",
-              "inject-supabase-authorization"
-              ]
+              {
+                "export": "SetHeadersInboundPolicy",
+                "module": "$import(@zuplo/runtime)",
+                "options": {
+                  "headers": [
+                    {
+                      "name": "Authorization",
+                      "value": "Bearer ${env.SUPABASE_ACCESS_TOKEN}",
+                      "allowOverwrite": true
+                    }
+                  ]
+                }
+              }
+            ]
           },
           "handler": {
             "export": "urlRewriteHandler",
