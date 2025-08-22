@@ -131,6 +131,7 @@
               "require-api-key",
               "ratelimit-per-partner",
               "inject-partner-id",
+              "remove-authorization-header",
               "inject-supabase-secret"
             ]
           },
