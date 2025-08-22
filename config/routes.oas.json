@@ -1,115 +1,58 @@
 {
-
   "openapi": "3.1.0",
-
   "info": {
-
     "version": "1.0.0",
-
     "title": "Global.Church Church API"
-
   },
-
   "paths": {
-
     "/v1/churches/search": {
-
       "get": {
-
         "summary": "Search churches (V1)",
-
         "description": "Proxy to Supabase Edge Function `churches-search`. Accepts q, country, limit, belief, trinitarian, language, program, bbox (min_lat,max_lat,min_lng,max_lng), and radius (center_lat,center_lng,radius_km). Returns the frozen V1 contract.",
-
         "parameters": [
-
           { "in": "query", "name": "church_name", "schema": { "type": "string" } },
-
           { "in": "query", "name": "country", "schema": { "type": "string" } },
-
           { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } },
-
           { "in": "query", "name": "belief", "schema": { "type": "string" } },
-
           { "in": "query", "name": "trinitarian", "schema": { "type": "boolean" } },
-
           { "in": "query", "name": "language", "schema": { "type": "string" } },
-
           { "in": "query", "name": "program", "schema": { "type": "string" } },
-
           { "in": "query", "name": "min_lat", "schema": { "type": "number" } },
-
           { "in": "query", "name": "max_lat", "schema": { "type": "number" } },
-
           { "in": "query", "name": "min_lng", "schema": { "type": "number" } },
-
           { "in": "query", "name": "max_lng", "schema": { "type": "number" } },
-
           { "in": "query", "name": "center_lat", "schema": { "type": "number" } },
-
           { "in": "query", "name": "center_lng", "schema": { "type": "number" } },
-
           { "in": "query", "name": "radius_km", "schema": { "type": "number" } },
-
           { "in": "query", "name": "id", "schema": { "type": "string", "format": "uuid" } }
-
         ],
-
         "responses": { "200": { "description": "OK" } },
-
         "x-zuplo-route": {
-
           "corsPolicy": "none",
-
           "policies": {
-
             "inbound": [
-
               "require-api-key",
-
               "ratelimit-per-partner",
-
               "inject-partner-id",
-
               "inject-supabase-authorization"
-
               ]
-
           },
-
           "handler": {
-
             "export": "urlRewriteHandler",
-
             "module": "$import(@zuplo/runtime)",
-
             "options": {
-
               "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/churches-search",
-
               "forwardSearch": true,
-
               "followRedirects": false
-
             }
-
           }
-
         },
-
         "tags": ["Churches"],
-
         "operationId": "3b3ac9c6-5b12-4b23-880d-20011f448d07"
-
       }
-
     }
-
   },
-
   "components": {
-
     "schemas": {}
-
   }
-
 }
