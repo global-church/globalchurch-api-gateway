@@ -54,7 +54,7 @@
           "headers": [
             { 
               "name": "Authorization", 
-              "value": "Bearer $env(SUPABASE_ANON_JWT)" 
+              "value": "Bearer $env(SUPABASE_ACCESS_TOKEN)" 
             }
           ]
         }
