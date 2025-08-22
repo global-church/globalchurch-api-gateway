@@ -45,7 +45,7 @@
       }
     },
     {
-      "name": "inject-supabase-secret",
+      "name": "inject-supabase-jwt",
       "policyType": "set-headers-inbound",
       "handler": {
         "export": "SetHeadersInboundPolicy",
@@ -53,15 +53,15 @@
         "options": {
           "headers": [
             {
-              "name": "x-internal-api-key",
-              "value": "$env(SUPABASE_ACCESS_TOKEN)"
+              "name": "Authorization",
+              "value": "Bearer ${env.SUPABASE_ANON_JWT}"
             }
           ]
         }
       }
     },
     {
-      "name": "remove-authorization-header",
+      "name": "remove-incoming-authorization-header",
       "policyType": "remove-headers-inbound",
       "handler": {
         "export": "RemoveHeadersInboundPolicy",
