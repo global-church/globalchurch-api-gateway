@@ -52,10 +52,23 @@
         "module": "$import(@zuplo/runtime)",
         "options": {
           "headers": [
-            { 
-              "name": "x-internal-api-key", 
-              "value": "$env(SUPABASE_ACCESS_TOKEN)" 
+            {
+              "name": "x-internal-api-key",
+              "value": "$env(SUPABASE_ACCESS_TOKEN)"
             }
+          ]
+        }
+      }
+    },
+    {
+      "name": "remove-authorization-header",
+      "policyType": "remove-headers-inbound",
+      "handler": {
+        "export": "RemoveHeadersInboundPolicy",
+        "module": "$import(@zuplo/runtime)",
+        "options": {
+          "headers": [
+            "Authorization"
           ]
         }
       }
