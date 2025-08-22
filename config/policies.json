@@ -52,10 +52,8 @@
         "module": "$import(@zuplo/runtime)",
         "options": {
           "headers": [
-            {
-              "name": "Authorization",
-              "value": "Bearer $env(SUPABASE_ANON_JWT)"
-            }
+            { "name": "Authorization", "value": "Bearer $env(SUPABASE_ANON_JWT)" },
+            { "name": "apikey", "value": "$env(SUPABASE_SECRET_KEY)" }
           ]
         }
       }
