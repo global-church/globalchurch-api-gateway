@@ -54,7 +54,7 @@
           "headers": [
             {
               "name": "Authorization",
-              "value": "Bearer ${env.SUPABASE_ANON_JWT}"
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5janljY3JsYmp3bm1manZvaWx5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxODM1NzQsImV4cCI6MjA3MDc1OTU3NH0.5dCtKZqfp93MEEGbl9mQA9NoMtK2I3axTKe-ne0vfZI"
             }
           ]
         }
