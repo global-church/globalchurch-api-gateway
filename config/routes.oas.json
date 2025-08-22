@@ -131,7 +131,7 @@
               "require-api-key",
               "ratelimit-per-partner",
               "inject-partner-id",
-              "inject-supabase-authorization"
+              "inject-supabase-secret"
             ]
           },
           "handler": {
