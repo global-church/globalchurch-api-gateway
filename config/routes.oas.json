@@ -10,115 +10,41 @@
         "summary": "Search churches (V1)",
         "description": "Proxy to Supabase Edge Function `churches-search`. Accepts q, country, limit, belief, trinitarian, language, program, bbox (min_lat,max_lat,min_lng,max_lng), and radius (center_lat,center_lng,radius_km). Returns the frozen V1 contract.",
         "parameters": [
-          {
-            "in": "query",
-            "name": "church_name",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "country",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "limit",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100
-            }
-          },
-          {
-            "in": "query",
-            "name": "belief",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "trinitarian",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
-            "in": "query",
-            "name": "language",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "program",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "min_lat",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "max_lat",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "min_lng",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "max_lng",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "center_lat",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "center_lng",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "radius_km",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
+          { "in": "query", "name": "q",             "schema": { "type": "string" },  "description": "Name search (trigram). Example: q=grace" },
+          { "in": "query", "name": "country",       "schema": { "type": "string" },  "description": "Filter by ISO country code or country text (exact match)." },
+          { "in": "query", "name": "belief",        "schema": { "type": "string" },  "description": "Filter by belief type (exact match of enum string)." },
+          { "in": "query", "name": "trinitarian",   "schema": { "type": "boolean" }, "description": "Filter by Trinitarian beliefs (true/false)." },
+
+          { "in": "query", "name": "region",        "schema": { "type": "string" },  "description": "Filter by region (exact match)."},
+          { "in": "query", "name": "locality",      "schema": { "type": "string" },  "description": "Filter by locality/city (exact match)."},
+          { "in": "query", "name": "postal_code",   "schema": { "type": "string" },  "description": "Filter by postal/ZIP code (exact match)." },
+
+          { "in": "query", "name": "languages",     "schema": { "type": "array", "items": { "type": "string" } }, "style": "form", "explode": true,
+          "description": "Match ANY service language. Repeat the parameter for multiples (languages=en&languages=es)." },
+
+          { "in": "query", "name": "programs",      "schema": { "type": "array", "items": { "type": "string" } }, "style": "form", "explode": true,
+          "description": "Match ANY program offered. Repeat for multiples (programs=youth&programs=missions)." },
+
+          { "in": "query", "name": "language",      "schema": { "type": "string" },  "deprecated": true,
+          "description": "[Deprecated] Single-language filter. Prefer languages=… (multi)." },
+
+          { "in": "query", "name": "program",       "schema": { "type": "string" },  "deprecated": true,
+          "description": "[Deprecated] Single-program filter. Prefer programs=… (multi)." },
+
+          { "in": "query", "name": "limit",         "schema": { "type": "integer", "minimum": 1, "maximum": 100 }, "description": "Max rows to return (1–100)." },
+
+          { "in": "query", "name": "id",            "schema": { "type": "string", "format": "uuid" },
+          "description": "Return a single church by UUID (overrides other filters)." },
+
+          { "in": "query", "name": "min_lat",       "schema": { "type": "number" }, "description": "BBox: min latitude." },
+          { "in": "query", "name": "max_lat",       "schema": { "type": "number" }, "description": "BBox: max latitude." },
+          { "in": "query", "name": "min_lng",       "schema": { "type": "number" }, "description": "BBox: min longitude." },
+          { "in": "query", "name": "max_lng",       "schema": { "type": "number" }, "description": "BBox: max longitude." },
+
+          { "in": "query", "name": "center_lat",    "schema": { "type": "number" }, "description": "Radius: center latitude." },
+          { "in": "query", "name": "center_lng",    "schema": { "type": "number" }, "description": "Radius: center longitude." },
+          { "in": "query", "name": "radius_km",     "schema": { "type": "number" }, "description": "Radius: distance in kilometers." }
+        ]
         "responses": {
           "200": {
             "description": "OK"
