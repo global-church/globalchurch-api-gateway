@@ -35,7 +35,7 @@
           { "in": "query", "name": "center_lat",    "schema": { "type": "number" }},
           { "in": "query", "name": "center_lng",    "schema": { "type": "number" }},
           { "in": "query", "name": "radius_km",     "schema": { "type": "number" }}
-        ]
+        ],
         "responses": {
           "200": {
             "description": "OK"
