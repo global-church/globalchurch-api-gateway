@@ -79,8 +79,8 @@
       "allowHeaders": ["authorization", "content-type", "x-api-key", "x-zuplo-partner-id"],
       "allowMethods": ["GET", "POST", "OPTIONS"],
       "exposeHeaders": ["x-ratelimit-remaining"],
-      "maxAge": 86400
-      "allowCredentials": false,
+      "maxAge": 86400,
+      "allowCredentials": false
     }
   ]
 }
