@@ -42,7 +42,7 @@
           }
         },
         "x-zuplo-route": {
-          "corsPolicy": "none",
+          "corsPolicy": "custom-cors",
           "policies": {
             "inbound": [
               "require-api-key",
