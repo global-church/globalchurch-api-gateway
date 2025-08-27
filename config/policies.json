@@ -9,7 +9,7 @@
         "options": {
           "allowUnauthenticatedRequests": false,
           "cacheTtlSeconds": 60,
-          "bucketName": "$env(ZUPLO_BUCKET_ID_PRODUCTION)"
+          "bucketName": "$env(BUCKET_ID_PRODUCTION)"
         }
       }
     },
