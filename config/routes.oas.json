@@ -66,7 +66,7 @@
         ],
         "operationId": "3b3ac9c6-5b12-4b23-880d-20011f448d07"
       }
-    }
+    },
     "/mcp": {
       "post": {
         "summary": "MCP Server",
