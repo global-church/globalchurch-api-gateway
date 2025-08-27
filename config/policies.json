@@ -75,7 +75,7 @@
   "corsPolicies": [
     {
       "name": "custom-cors",
-      "allowedOrigins": "https://church-finder.vercel.app, http://localhost:3000",
+      "allowedOrigins": "$env(ALLOWED_ORIGINS)",
       "allowedHeaders": "origin, authorization, content-type, x-api-key, x-zuplo-partner-id",
       "allowedMethods": ["GET", "POST", "OPTIONS"],
       "exposeHeaders": "x-ratelimit-remaining",
