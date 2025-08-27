@@ -74,9 +74,18 @@
         "x-zuplo-route": {
           "corsPolicy": "custom-cors",
           "handler": {
-            "export": "McpHandler",
+            "export": "mcpServerHandler",
             "module": "$import(@zuplo/runtime)",
-            "options": {}
+            "options": {
+              "name": "global-church-mcp-server",
+              "version": "1.0.0",
+              "debugMode": true,
+              "openApiFilePaths": [
+                {
+                  "filePath": "./config/routes.oas.json"
+                }
+              ]
+            }
           },
           "policies": {
             "inbound": [
