@@ -67,6 +67,26 @@
         "operationId": "3b3ac9c6-5b12-4b23-880d-20011f448d07"
       }
     }
+    "/mcp": {
+      "post": {
+        "summary": "MCP Server",
+        "description": "Handles MCP requests for the Global.Church API.",
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "handler": {
+            "export": "McpHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {}
+          },
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner"
+            ]
+          }
+        }
+      }
+    }
   },
   "components": {
     "schemas": {}
