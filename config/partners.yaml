@@ -33,4 +33,4 @@ partners:
     plan: "standard"  # This is just a placeholder; plans in the future could be issued with different payment tiers
     rateLimit: 70
 
-# Comment to trigger a re-deployment #2
+# Comment to trigger a re-deployment #3
