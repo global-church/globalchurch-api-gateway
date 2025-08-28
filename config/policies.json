@@ -71,6 +71,37 @@
           ]
         }
       }
+    },
+    {
+      "name": "log-incoming-headers-mcp",
+      "policyType": "log-request-response-inbound",
+      "handler": {
+        "export": "LogRequestResponseInboundPolicy",
+        "module": "$import(@zuplo/runtime)",
+        "options": {
+          "log": {
+            "body": false,
+            "headers": true
+          }
+        }
+      }
+    },
+    {
+      "policies": [
+        {
+          "name": "mcp-query-param-to-header-inbound",
+          "policyType": "query-param-to-header-inbound",
+          "handler": {
+            "export": "QueryParamToHeaderInboundPolicy",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "queryParam": "apiKey",
+              "headerName": "Authorization",
+              "headerValue": "Bearer {value}"
+            }
+          }
+        }
+      ]
     }
   ],
   "corsPolicies": [

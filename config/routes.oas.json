@@ -71,8 +71,10 @@
       "post": {
         "summary": "MCP Server",
         "description": "Handles MCP requests for the Global.Church API.",
+        "operationId": "mcp_server",
         "x-zuplo-route": {
           "corsPolicy": "custom-cors",
+          "mcp": { "enabled": false },
           "handler": {
             "export": "mcpServerHandler",
             "module": "$import(@zuplo/runtime)",
@@ -81,14 +83,13 @@
               "version": "1.0.0",
               "debugMode": true,
               "openApiFilePaths": [
-                {
-                  "filePath": "./config/routes.oas.json"
-                }
+                { "filePath": "./config/routes.oas.json" }
               ]
             }
           },
           "policies": {
             "inbound": [
+              "mcp-query-param-to-header-inbound",
               "require-api-key",
               "ratelimit-per-partner"
             ]
