@@ -9,7 +9,7 @@
         "options": {
           "allowUnauthenticatedRequests": false,
           "cacheTtlSeconds": 60,
-          "bucketName": "$env(BUCKET_ID_PRODUCTION)"
+          "bucketName": "zprj-xcoscry0fvgghmxpthytslnc-production"
         }
       }
     },
