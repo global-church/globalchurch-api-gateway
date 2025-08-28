@@ -10,32 +10,181 @@
         "summary": "Search churches (V1)",
         "description": "Proxy to Supabase Edge Function `churches-search`. Accepts q, country, limit, belief, trinitarian, language, program, bbox (min_lat,max_lat,min_lng,max_lng), and radius (center_lat,center_lng,radius_km). Returns the frozen V1 contract.",
         "parameters": [
-          { "in": "query", "name": "q",             "schema": { "type": "string" }},
-          { "in": "query", "name": "country",       "schema": { "type": "string" }},
-          { "in": "query", "name": "belief",        "schema": { "type": "string" }},
-          { "in": "query", "name": "trinitarian",   "schema": { "type": "boolean" }},
-
-          { "in": "query", "name": "region",        "schema": { "type": "string" }},
-          { "in": "query", "name": "locality",      "schema": { "type": "string" }},
-          { "in": "query", "name": "postal_code",   "schema": { "type": "string" }},
-
-          { "in": "query", "name": "languages",     "schema": { "type": "array", "items": { "type": "string" } }, "style": "form", "explode": true},
-
-          { "in": "query", "name": "programs",      "schema": { "type": "array", "items": { "type": "string" } }, "style": "form", "explode": true},
-
-          { "in": "query", "name": "limit",         "schema": { "type": "integer", "minimum": 1, "maximum": 100 }},
-
-          { "in": "query", "name": "id",            "schema": { "type": "string", "format": "uuid" }},
-
-          { "in": "query", "name": "min_lat",       "schema": { "type": "number" }},
-          { "in": "query", "name": "max_lat",       "schema": { "type": "number" }},
-          { "in": "query", "name": "min_lng",       "schema": { "type": "number" }},
-          { "in": "query", "name": "max_lng",       "schema": { "type": "number" }},
-
-          { "in": "query", "name": "center_lat",    "schema": { "type": "number" }},
-          { "in": "query", "name": "center_lng",    "schema": { "type": "number" }},
-          { "in": "query", "name": "radius_km",     "schema": { "type": "number" }}
+          {
+            "in": "query",
+            "name": "q",
+            "description": "Free-text search across name/address/keywords.",
+            "schema": { "type": "string" },
+            "example": "grace church"
+          },
+          {
+            "in": "query",
+            "name": "country",
+            "description": "Country code (ISO 3166-1 alpha-2). Example: US, NG, GB.",
+            "schema": { "type": "string", "minLength": 2, "maxLength": 2 },
+            "example": "US"
+          },
+          {
+            "in": "query",
+            "name": "belief",
+            "description": "Top-level belief family. Use one of the allowed values.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "roman_catholic",
+                "protestant",
+                "orthodox",
+                "anglican",
+                "other",
+                "unknown"
+              ]
+            },
+            "example": "roman_catholic"
+          },
+          {
+            "in": "query",
+            "name": "trinitarian",
+            "description": "Filter by Trinitarian belief (true/false).",
+            "schema": { "type": "boolean" },
+            "example": true
+          },
+          {
+            "in": "query",
+            "name": "region",
+            "description": "State/province/region code (e.g., US state). Use a short code when available.",
+            "schema": { "type": "string", "minLength": 2, "maxLength": 32 },
+            "example": "CA"
+          },
+          {
+            "in": "query",
+            "name": "locality",
+            "description": "City/locality name.",
+            "schema": { "type": "string" },
+            "example": "El Cajon"
+          },
+          {
+            "in": "query",
+            "name": "postal_code",
+            "description": "Postal/ZIP code for the address.",
+            "schema": { "type": "string" },
+            "example": "92020"
+          },
+          {
+            "in": "query",
+            "name": "languages",
+            "description": "Array of languages for services. Full name.",
+            "schema": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "examples": {
+              "english_and_spanish": { "value": ["English","Spanish"] },
+              "english": { "value": ["English"]}
+            }
+          },
+          {
+            "in": "query",
+            "name": "programs",
+            "description": "Programs/ministries offered (free-text labels, multiple allowed).",
+            "schema": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "examples": {
+              "youth_and_kids": { "value": ["youth group","kids ministry"] }
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Max results to return (1–100).",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 100 },
+            "example": 10
+          },
+          {
+            "in": "query",
+            "name": "id",
+            "description": "Filter by church_id (UUID).",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+            },
+            "example": "9e1c2a7d-4c33-4b8b-9d7a-1a2b3c4d5e6f"
+          },
+          {
+            "in": "query",
+            "name": "min_lat",
+            "description": "Minimum latitude in decimal degrees (-90 to 90).",
+            "schema": { "type": "number", "minimum": -90, "maximum": 90 },
+            "example": 32.5
+          },
+          {
+            "in": "query",
+            "name": "max_lat",
+            "description": "Maximum latitude in decimal degrees (-90 to 90).",
+            "schema": { "type": "number", "minimum": -90, "maximum": 90 },
+            "example": 33.4
+          },
+          {
+            "in": "query",
+            "name": "min_lng",
+            "description": "Minimum longitude in decimal degrees (-180 to 180).",
+            "schema": { "type": "number", "minimum": -180, "maximum": 180 },
+            "example": -117.5
+          },
+          {
+            "in": "query",
+            "name": "max_lng",
+            "description": "Maximum longitude in decimal degrees (-180 to 180).",
+            "schema": { "type": "number", "minimum": -180, "maximum": 180 },
+            "example": -116.8
+          },
+          {
+            "in": "query",
+            "name": "center_lat",
+            "description": "Center latitude in decimal degrees (-90 to 90).",
+            "schema": { "type": "number", "minimum": -90, "maximum": 90 },
+            "example": 32.7157
+          },
+          {
+            "in": "query",
+            "name": "center_lng",
+            "description": "Center longitude in decimal degrees (-180 to 180).",
+            "schema": { "type": "number", "minimum": -180, "maximum": 180 },
+            "example": -117.1611
+          },
+          {
+            "in": "query",
+            "name": "radius_km",
+            "description": "Search radius in kilometers (0.1–200).",
+            "schema": { "type": "number", "minimum": 0.1, "maximum": 200 },
+            "example": 25
+          }
         ],
+        "x-examples": {
+          "el_cajon_catholic": {
+            "summary": "Roman Catholic churches in El Cajon, CA",
+            "value": {
+              "queryParams": {
+                "country": "US",
+                "belief": "roman_catholic",
+                "locality": "El Cajon",
+                "region": "CA"
+              }
+            }
+          },
+          "radius_downtown_sd": {
+            "summary": "Radius search near downtown San Diego",
+            "value": {
+              "queryParams": {
+                "center_lat": 32.7157,
+                "center_lng": -117.1611,
+                "radius_km": 25
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
