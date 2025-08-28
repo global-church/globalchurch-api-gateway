@@ -70,6 +70,7 @@
     "/mcp": {
       "post": {
         "summary": "MCP Server",
+        "x-internal": true,
         "description": "Handles MCP requests for the Global.Church API.",
         "operationId": "mcp_server",
         "x-zuplo-route": {
