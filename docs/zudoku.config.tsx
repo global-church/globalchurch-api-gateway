@@ -7,19 +7,20 @@ import type { ZudokuConfig } from "zudoku";
  */
 const config: ZudokuConfig = {
   site: {
-    title: "My Developer Portal",
+    title: "Global.Church Developer Portal",
     logo: {
       src: {
-        light: "https://cdn.zuplo.com/assets/my-dev-portal-light.svg",
-        dark: "https://cdn.zuplo.com/assets/my-dev-portal-dark.svg",
+        light: "/gc-logo.png",
+        dark: "/gc-logo.png",
       },
     },
   },
   metadata: {
-    title: "Developer Portal",
-    description: "Developer Portal",
+    title: "Global.Church Developer Portal",
+    description: "Global.Church API documentation and developer playground site",
   },
   navigation: [
+/*
     {
       type: "category",
       label: "Documentation",
@@ -59,10 +60,12 @@ const config: ZudokuConfig = {
         },
       ],
     },
+*/
+
     {
       type: "link",
       to: "/api",
-      label: "API Reference",
+      label: "Global.Church API Reference",
     },
   ],
   redirects: [{ from: "/", to: "/api" }],

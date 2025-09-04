@@ -20,9 +20,9 @@
           {
             "in": "query",
             "name": "country",
-            "description": "Country code (ISO 3166-1 alpha-2). Example: US, NG, GB.",
-            "schema": { "type": "string", "minLength": 2, "maxLength": 2 },
-            "example": "US"
+            "description": "Country code (ISO 3166-1 alpha-3). Example: USA, NGA, GBR.",
+            "schema": { "type": "string", "minLength": 3, "maxLength": 3 },
+            "example": "USA"
           },
           {
             "in": "query",
@@ -37,21 +37,21 @@
           {
             "in": "query",
             "name": "trinitarian",
-            "description": "Filter by Trinitarian belief.",
+            "description": "Filter by Trinitarian belief. Currently redundant since we only support Trinitarian churches.",
             "schema": { "type": "boolean" },
             "example": true
           },
           {
             "in": "query",
             "name": "region",
-            "description": "State/province/region code (e.g., US state).",
-            "schema": { "type": "string", "minLength": 1, "maxLength": 32 },
+            "description": "State/province/region code (e.g., US state). NOTE: Most non-US regions are not supported. Use with caution.",
+            "schema": { "type": "string", "minLength": 2, "maxLength": 32 },
             "example": "CA"
           },
           {
             "in": "query",
             "name": "locality",
-            "description": "City/locality name.",
+            "description": "City/locality/town name.",
             "schema": { "type": "string" },
             "example": "El Cajon"
           },
@@ -65,7 +65,7 @@
           {
             "in": "query",
             "name": "languages",
-            "description": "Service languages (array). Accepts repeated keys or comma-separated form.",
+            "description": "Service languages (array) using ISO 639-3 language codes. Accepts repeated keys or comma-separated form.",
             "schema": {
               "type": "array",
               "items": { "type": "string" }
@@ -73,8 +73,8 @@
             "style": "form",
             "explode": true,
             "examples": {
-              "english_and_spanish": { "value": ["English","Spanish"] },
-              "english": { "value": ["English"] }
+              "english_and_spanish": { "value": ["eng","spa"] },
+              "norwegian": { "value": ["nor"] }
             }
           },
           {
@@ -88,20 +88,21 @@
             "style": "form",
             "explode": true,
             "examples": {
-              "youth_and_kids": { "value": ["youth group","kids ministry"] }
+              "example_1": { "value": ["kids ministry","missions","youth ministry"] },
+              "example_2": { "value": ["christian women's council","music department","prayer ministry","young women's christian council","youth department"] }
             }
           },
           {
             "in": "query",
             "name": "limit",
             "description": "Max results to return. The Edge clamps very large values; default 25.",
-            "schema": { "type": "integer", "minimum": 1, "maximum": 300000 },
+            "schema": { "type": "integer", "minimum": 1, "maximum": 1000 },
             "example": 1000
           },
           {
             "in": "query",
             "name": "id",
-            "description": "Filter by church_id (UUID).",
+            "description": "Filter by church_id. UUIDv5 format, assigned by Global.Church. Not useful for user-created searches.",
             "schema": {
               "type": "string",
               "format": "uuid",
@@ -178,7 +179,7 @@
             "summary": "Roman Catholic churches in El Cajon, CA",
             "value": {
               "queryParams": {
-                "country": "US",
+                "country": "USA",
                 "belief": "roman_catholic",
                 "locality": "El Cajon",
                 "region": "CA",
@@ -206,7 +207,7 @@
                 "max_lat": 33.5,
                 "min_lng": -117.5,
                 "max_lng": -116.5,
-                "languages": ["English","Spanish"],
+                "languages": ["eng","spa"],
                 "programs": ["youth","kids"]
               }
             }
