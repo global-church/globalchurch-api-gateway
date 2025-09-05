@@ -316,7 +316,7 @@
             "export": "urlRewriteHandler",
             "module": "$import(@zuplo/runtime)",
             "options": {
-              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/churches-get",
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/churches-get?id=${request.params.id}",
               "forwardSearch": true,
               "followRedirects": false
             }
