@@ -27,7 +27,7 @@
           {
             "in": "query",
             "name": "belief",
-            "description": "Top-level belief family. Only include this field if the user has explicitly requested it.",
+            "description": "Top-level belief family. AGENT INSTRUCTION:Only include this field if the user has explicitly requested it.",
             "schema": {
               "type": "string",
               "enum": ["roman_catholic", "protestant", "orthodox", "anglican", "other", "unknown"]
@@ -37,7 +37,7 @@
           {
             "in": "query",
             "name": "trinitarian",
-            "description": "Filter by Trinitarian belief. Currently redundant since we only support Trinitarian churches.",
+            "description": "Filter by Trinitarian belief. Currently redundant since we only support Trinitarian churches. AGENT INSTRUCTION: Never include this field.",
             "schema": { "type": "boolean" },
             "example": true,
             "deprecated": true
@@ -45,7 +45,7 @@
           {
             "in": "query",
             "name": "region",
-            "description": "State/province/region code (e.g., US state). NOTE: Most non-US regions are not supported. Use with caution.",
+            "description": "State/province/region code (e.g., US state). Most non-US regions are not supported. Use with caution. AGENT INSTRUCTION: You should almost never include this field.",
             "schema": { "type": "string", "minLength": 2, "maxLength": 32 },
             "example": "CA"
           },
@@ -66,7 +66,7 @@
           {
             "in": "query",
             "name": "languages",
-            "description": "Service languages (array) using ISO 639-3 language codes. Encoded as repeated keys (e.g., ?languages=eng&languages=spa). Only include this field if the user has explicitly requested it.",
+            "description": "Service languages (array) using ISO 639-3 language codes. Encoded as repeated keys (e.g., ?languages=eng&languages=spa). Only include this parameter if the user has explicitly requested it.",
             "schema": {
               "type": "array",
               "items": { "type": "string" },
@@ -82,7 +82,7 @@
           {
             "in": "query",
             "name": "programs",
-            "description": "Programs/ministries offered (array). Partial/ILIKE match per token. Only include this field if the user has explicitly requested it.",
+            "description": "Programs/ministries offered (array). Partial/ILIKE match per token. Only include this parameter if the user has explicitly requested it.",
             "schema": {
               "type": "array",
               "items": { "type": "string" },
@@ -98,14 +98,14 @@
           {
             "in": "query",
             "name": "limit",
-            "description": "Max results to return. The Edge clamps very large values; default 25.",
+            "description": "Max results to return. AGENT INSTRUCTION: Default 100.",
             "schema": { "type": "integer", "minimum": 1, "maximum": 100 },
-            "example": 1000
+            "example": 100
           },
           {
             "in": "query",
             "name": "id",
-            "description": "Filter by church_id. UUIDv5 format, assigned by Global.Church. Not useful for user-created searches.",
+            "description": "Filter by Global.Church's church_id field. UUIDv5 format. AGENT INSTRUCTION: You should almost never include this parameter.",
             "schema": {
               "type": "string",
               "format": "uuid",
@@ -167,14 +167,14 @@
             "name": "fields",
             "description": "Comma-separated list of columns to include. Columns map to api.v1_churches.",
             "schema": { "type": "string" },
-            "example": "church_id,name,latitude,longitude,website"
+            "example": "name,locality,country"
           },
           {
             "in": "query",
             "name": "format",
             "description": "Response format. `json` returns { items: [...] }. `geojson` returns a FeatureCollection.",
             "schema": { "type": "string", "enum": ["json","geojson"] },
-            "example": "geojson"
+            "example": "json"
           }
         ],
         "x-examples": {
@@ -185,8 +185,7 @@
                 "country": "USA",
                 "belief": "roman_catholic",
                 "locality": "El Cajon",
-                "region": "CA",
-                "fields": "church_id,name,locality,region,country,website"
+                "fields": "name,locality,country,belief_type"
               }
             }
           },
@@ -197,7 +196,7 @@
                 "center_lat": 32.7157,
                 "center_lng": -117.1611,
                 "radius_km": 10,
-                "fields": "church_id,name,latitude,longitude",
+                "fields": "name,latitude,longitude",
                 "format": "geojson"
               }
             }
@@ -262,6 +261,69 @@
         },
         "tags": ["Churches"],
         "operationId": "churches_search_v1"
+      }
+    },
+    "/v1/churches/{id}": {
+      "get": {
+        "summary": "Get church by ID (V1)",
+        "description": "Proxies to the Supabase Edge Function `churches-get`. Always returns the **full record** for a single church. This endpoint is intended to be used after a list/search so clients can fetch complete details (e.g., belief and livestream links) without managing field projections.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Global.Church church_id (UUIDv5).",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+            },
+            "example": "9e1c2a7d-4c33-4b8b-9d7a-1a2b3c4d5e6f"
+          }
+        ],
+        "x-examples": {
+          "shadow_mountain_details": {
+            "summary": "Fetch full details for Shadow Mountain Community Church",
+            "value": {
+              "pathParams": { "id": "9e1c2a7d-4c33-4b8b-9d7a-1a2b3c4d5e6f" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ChurchV1" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-partner-id",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/churches-get",
+              "forwardSearch": true,
+              "followRedirects": false
+            }
+          }
+        },
+        "tags": ["Churches"],
+        "operationId": "churches_get_v1"
       }
     },
     "/mcp": {
