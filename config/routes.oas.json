@@ -8,12 +8,12 @@
     "/v1/churches/search": {
       "get": {
         "summary": "Search churches (V1)",
-        "description": "Proxies to the Supabase Edge Function `churches-search`. Supports free-text, exact filters, viewport (bbox) and radius queries, arrays for languages/programs, optional field projection, and GeoJSON output.",
+        "description": "Proxies to the Supabase Edge Function `churches-search`. Supports free-text, exact filters, viewport (bbox) and radius queries, arrays for languages/programs, optional field projection, and GeoJSON output. Last updated: 2025-09-04.",
         "parameters": [
           {
             "in": "query",
             "name": "q",
-            "description": "Free-text search across name/address/website (ranked).",
+            "description": "Free-text search across name/address/website (ranked). Only include this field if the user has explicitly requested it",
             "schema": { "type": "string" },
             "example": "grace church"
           },
@@ -27,7 +27,7 @@
           {
             "in": "query",
             "name": "belief",
-            "description": "Top-level belief family.",
+            "description": "Top-level belief family. Only include this field if the user has explicitly requested it.",
             "schema": {
               "type": "string",
               "enum": ["roman_catholic", "protestant", "orthodox", "anglican", "other", "unknown"]
@@ -39,7 +39,8 @@
             "name": "trinitarian",
             "description": "Filter by Trinitarian belief. Currently redundant since we only support Trinitarian churches.",
             "schema": { "type": "boolean" },
-            "example": true
+            "example": true,
+            "deprecated": true
           },
           {
             "in": "query",
@@ -65,10 +66,11 @@
           {
             "in": "query",
             "name": "languages",
-            "description": "Service languages (array) using ISO 639-3 language codes. Accepts repeated keys or comma-separated form.",
+            "description": "Service languages (array) using ISO 639-3 language codes. Encoded as repeated keys (e.g., ?languages=eng&languages=spa). Only include this field if the user has explicitly requested it.",
             "schema": {
               "type": "array",
-              "items": { "type": "string" }
+              "items": { "type": "string" },
+              "minItems": 1
             },
             "style": "form",
             "explode": true,
@@ -80,10 +82,11 @@
           {
             "in": "query",
             "name": "programs",
-            "description": "Programs/ministries offered (array). Partial/ILIKE match per token.",
+            "description": "Programs/ministries offered (array). Partial/ILIKE match per token. Only include this field if the user has explicitly requested it.",
             "schema": {
               "type": "array",
-              "items": { "type": "string" }
+              "items": { "type": "string" },
+              "minItems": 1
             },
             "style": "form",
             "explode": true,
@@ -96,7 +99,7 @@
             "in": "query",
             "name": "limit",
             "description": "Max results to return. The Edge clamps very large values; default 25.",
-            "schema": { "type": "integer", "minimum": 1, "maximum": 1000 },
+            "schema": { "type": "integer", "minimum": 1, "maximum": 100 },
             "example": 1000
           },
           {
