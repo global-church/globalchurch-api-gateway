@@ -41,7 +41,7 @@ partners:
 
   - subject: "mathias-boampong-api"
     displayName: "Mathias Boampong's API"
-    contactEmail: "mathias.baompong@mindfulstrategyco.com"
+    contactEmail: "mathias@techvision.global"
     plan: "standard"  # This is just a placeholder; plans in the future could be issued with different payment tiers
     rateLimit: 100
 
