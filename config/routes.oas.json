@@ -334,7 +334,7 @@
         "operationId": "mcp_server",
         "x-zuplo-route": {
           "corsPolicy": "custom-cors",
-          "mcp": { "type": "tool-listing", "enabled": false }
+          "mcp": { "type": "tool-listing", "enabled": false },
           "handler": {
             "export": "mcpServerHandler",
             "module": "$import(@zuplo/runtime)",
