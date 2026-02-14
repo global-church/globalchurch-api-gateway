@@ -354,6 +354,199 @@
           }
         }
       }
+    },
+    "/v1/gc-core/sparql": {
+      "post": {
+        "summary": "Execute SPARQL query",
+        "description": "Proxies SPARQL queries to the GC-Core ontology repository in GraphDB.",
+        "operationId": "gc_core_sparql",
+        "tags": ["GC-Core Ontology"],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Accept",
+            "description": "Desired response format for SPARQL results.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "application/sparql-results+json",
+                "application/sparql-results+xml",
+                "text/csv",
+                "text/turtle"
+              ]
+            },
+            "example": "application/sparql-results+json"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/sparql-query": {
+              "schema": {
+                "type": "string"
+              },
+              "example": "SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 10"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SPARQL results",
+            "content": {
+              "application/sparql-results+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "head": {
+                      "type": "object",
+                      "properties": {
+                        "vars": {
+                          "type": "array",
+                          "items": { "type": "string" }
+                        }
+                      },
+                      "required": ["vars"]
+                    },
+                    "results": {
+                      "type": "object",
+                      "properties": {
+                        "bindings": {
+                          "type": "array",
+                          "items": { "type": "object" }
+                        }
+                      },
+                      "required": ["bindings"]
+                    }
+                  },
+                  "required": ["head", "results"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — invalid SPARQL query"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.GRAPHDB_URL}/repositories/gc-core",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
+    "/v1/gc-core/ingest": {
+      "post": {
+        "summary": "Ingest RDF triples",
+        "description": "Inserts RDF triples into the GC-Core ontology repository in GraphDB.",
+        "operationId": "gc_core_ingest",
+        "tags": ["GC-Core Ontology"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "text/turtle": {
+              "schema": {
+                "type": "string"
+              },
+              "example": "@prefix gc: <https://ontology.global.church/> .\ngc:Church1 a gc:Church ;\n  gc:name \"Grace Church\" ."
+            },
+            "application/ld+json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "@context": "https://ontology.global.church/",
+                "@type": "Church",
+                "name": "Grace Church"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Triples ingested successfully"
+          },
+          "400": {
+            "description": "Bad request — malformed RDF data"
+          },
+          "422": {
+            "description": "SHACL validation failed"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.GRAPHDB_URL}/repositories/gc-core/statements",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
+    "/v1/gc-core/health": {
+      "get": {
+        "summary": "GC-Core health check",
+        "description": "Health check for the GC-Core ontology repository. Returns repository status and triple count. No authentication required.",
+        "operationId": "gc_core_health",
+        "tags": ["GC-Core Ontology"],
+        "responses": {
+          "200": {
+            "description": "Repository is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string" },
+                    "tripleCount": { "type": "integer" }
+                  },
+                  "required": ["status", "tripleCount"]
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Repository is unavailable"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.GRAPHDB_URL}/repositories/gc-core/size",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
     }
   },
   "components": {
