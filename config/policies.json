@@ -109,6 +109,15 @@
       "exposeHeaders": "x-ratelimit-remaining",
       "maxAge": 86400,
       "allowCredentials": false
+    },
+    {
+      "name": "gc-core-cors",
+      "allowedOrigins": "https://engage.global.church",
+      "allowedHeaders": "authorization, content-type, accept",
+      "allowedMethods": ["GET", "POST", "OPTIONS"],
+      "exposeHeaders": "x-ratelimit-remaining",
+      "maxAge": 86400,
+      "allowCredentials": false
     }
   ]
 }

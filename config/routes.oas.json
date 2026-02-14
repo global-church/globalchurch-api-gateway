@@ -428,12 +428,37 @@
           }
         },
         "x-zuplo-route": {
-          "corsPolicy": "custom-cors",
+          "corsPolicy": "gc-core-cors",
           "policies": {
             "inbound": [
               "require-api-key",
               "ratelimit-per-partner"
             ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.GRAPHDB_URL}/repositories/gc-core",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for SPARQL",
+        "operationId": "gc_core_sparql_preflight",
+        "tags": ["GC-Core Ontology"],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "gc-core-cors",
+          "policies": {
+            "inbound": []
           },
           "handler": {
             "export": "urlRewriteHandler",
@@ -486,12 +511,37 @@
           }
         },
         "x-zuplo-route": {
-          "corsPolicy": "custom-cors",
+          "corsPolicy": "gc-core-cors",
           "policies": {
             "inbound": [
               "require-api-key",
               "ratelimit-per-partner"
             ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.GRAPHDB_URL}/repositories/gc-core/statements",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for ingest",
+        "operationId": "gc_core_ingest_preflight",
+        "tags": ["GC-Core Ontology"],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "gc-core-cors",
+          "policies": {
+            "inbound": []
           },
           "handler": {
             "export": "urlRewriteHandler",
@@ -532,7 +582,32 @@
           }
         },
         "x-zuplo-route": {
-          "corsPolicy": "custom-cors",
+          "corsPolicy": "gc-core-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.GRAPHDB_URL}/repositories/gc-core/size",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for health",
+        "operationId": "gc_core_health_preflight",
+        "tags": ["GC-Core Ontology"],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "gc-core-cors",
           "policies": {
             "inbound": []
           },
