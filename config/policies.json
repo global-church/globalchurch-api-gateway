@@ -104,16 +104,7 @@
     {
       "name": "custom-cors",
       "allowedOrigins": "$env(ALLOWED_ORIGINS)",
-      "allowedHeaders": "origin, authorization, content-type, x-api-key, x-zuplo-partner-id",
-      "allowedMethods": ["GET", "POST", "OPTIONS"],
-      "exposeHeaders": "x-ratelimit-remaining",
-      "maxAge": 86400,
-      "allowCredentials": false
-    },
-    {
-      "name": "gc-core-cors",
-      "allowedOrigins": "https://engage.global.church",
-      "allowedHeaders": "authorization, content-type, accept",
+      "allowedHeaders": "origin, authorization, content-type, accept, x-api-key, x-zuplo-partner-id",
       "allowedMethods": ["GET", "POST", "OPTIONS"],
       "exposeHeaders": "x-ratelimit-remaining",
       "maxAge": 86400,

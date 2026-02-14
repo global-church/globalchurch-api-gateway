@@ -428,7 +428,7 @@
           }
         },
         "x-zuplo-route": {
-          "corsPolicy": "gc-core-cors",
+          "corsPolicy": "custom-cors",
           "policies": {
             "inbound": [
               "require-api-key",
@@ -456,7 +456,7 @@
           }
         },
         "x-zuplo-route": {
-          "corsPolicy": "gc-core-cors",
+          "corsPolicy": "custom-cors",
           "policies": {
             "inbound": []
           },
@@ -511,7 +511,7 @@
           }
         },
         "x-zuplo-route": {
-          "corsPolicy": "gc-core-cors",
+          "corsPolicy": "custom-cors",
           "policies": {
             "inbound": [
               "require-api-key",
@@ -539,7 +539,7 @@
           }
         },
         "x-zuplo-route": {
-          "corsPolicy": "gc-core-cors",
+          "corsPolicy": "custom-cors",
           "policies": {
             "inbound": []
           },
@@ -582,7 +582,7 @@
           }
         },
         "x-zuplo-route": {
-          "corsPolicy": "gc-core-cors",
+          "corsPolicy": "custom-cors",
           "policies": {
             "inbound": []
           },
@@ -607,7 +607,7 @@
           }
         },
         "x-zuplo-route": {
-          "corsPolicy": "gc-core-cors",
+          "corsPolicy": "custom-cors",
           "policies": {
             "inbound": []
           },
