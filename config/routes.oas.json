@@ -555,6 +555,94 @@
         }
       }
     },
+    "/v1/hex-viewport": {
+      "post": {
+        "summary": "Hex viewport query",
+        "description": "Proxies hex grid viewport queries to the Supabase Edge Function `hex-viewport`. Returns H3 hex cells with population and classification data for the given bounding box.",
+        "operationId": "hex_viewport",
+        "tags": ["Hex Grid"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["west", "south", "east", "north", "zoom"],
+                "properties": {
+                  "west": { "type": "number", "description": "Western longitude bound" },
+                  "south": { "type": "number", "description": "Southern latitude bound" },
+                  "east": { "type": "number", "description": "Eastern longitude bound" },
+                  "north": { "type": "number", "description": "Northern latitude bound" },
+                  "zoom": { "type": "integer", "description": "Map zoom level" },
+                  "rog_code": { "type": "string", "description": "ROG country code filter" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Hex cells in viewport",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hexes": {
+                      "type": "array",
+                      "items": { "type": "object" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/hex-viewport",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for hex viewport",
+        "operationId": "hex_viewport_preflight",
+        "tags": ["Hex Grid"],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/hex-viewport",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
     "/v1/gc-core/health": {
       "get": {
         "summary": "GC-Core health check",
