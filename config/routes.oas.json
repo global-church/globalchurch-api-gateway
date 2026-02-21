@@ -603,7 +603,8 @@
           "policies": {
             "inbound": [
               "require-api-key",
-              "ratelimit-per-partner"
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
             ]
           },
           "handler": {
