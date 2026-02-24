@@ -432,7 +432,8 @@
           "policies": {
             "inbound": [
               "require-api-key",
-              "ratelimit-per-partner"
+              "ratelimit-per-partner",
+              "inject-graphdb-auth"
             ]
           },
           "handler": {
@@ -515,7 +516,8 @@
           "policies": {
             "inbound": [
               "require-api-key",
-              "ratelimit-per-partner"
+              "ratelimit-per-partner",
+              "inject-graphdb-auth"
             ]
           },
           "handler": {
@@ -673,7 +675,9 @@
         "x-zuplo-route": {
           "corsPolicy": "custom-cors",
           "policies": {
-            "inbound": []
+            "inbound": [
+              "inject-graphdb-auth"
+            ]
           },
           "handler": {
             "export": "urlRewriteHandler",

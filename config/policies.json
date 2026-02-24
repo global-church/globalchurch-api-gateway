@@ -60,6 +60,19 @@
       }
     },
     {
+      "name": "inject-graphdb-auth",
+      "policyType": "set-headers-inbound",
+      "handler": {
+        "export": "SetHeadersInboundPolicy",
+        "module": "$import(@zuplo/runtime)",
+        "options": {
+          "headers": [
+            { "name": "Authorization", "value": "$env(GRAPHDB_BASIC_AUTH)" }
+          ]
+        }
+      }
+    },
+    {
       "name": "remove-incoming-authorization-header",
       "policyType": "remove-headers-inbound",
       "handler": {
