@@ -821,6 +821,186 @@
         }
       }
     },
+    "/v1/admin/claims": {
+      "get": {
+        "summary": "List org claims",
+        "description": "Proxies to the Supabase Edge Function `list-claims`. Returns paginated org claims for the admin dashboard. Supports status filtering and pagination via query params.",
+        "operationId": "admin_list_claims",
+        "tags": ["Admin"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "description": "Filter by claim status.",
+            "schema": { "type": "string", "enum": ["pending", "approved", "rejected"] }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Max rows to return (default 50, max 200).",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 200 }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "description": "Pagination offset (default 0).",
+            "schema": { "type": "integer", "minimum": 0 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of org claims",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "claims": { "type": "array", "items": { "type": "object" } },
+                    "total": { "type": "integer" }
+                  },
+                  "required": ["claims", "total"]
+                }
+              }
+            }
+          },
+          "401": { "description": "Missing admin email header" },
+          "403": { "description": "Not an admin" }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/list-claims",
+              "forwardSearch": true,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for list claims",
+        "operationId": "admin_list_claims_preflight",
+        "tags": ["Admin"],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/list-claims",
+              "forwardSearch": true,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/claims/review": {
+      "post": {
+        "summary": "Review org claim",
+        "description": "Proxies to the Supabase Edge Function `review-claim`. Approves or rejects an org claim.",
+        "operationId": "admin_review_claim",
+        "tags": ["Admin"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["claimId", "action", "adminEmail"],
+                "properties": {
+                  "claimId": { "type": "string", "format": "uuid" },
+                  "action": { "type": "string", "enum": ["approve", "reject"] },
+                  "adminEmail": { "type": "string", "format": "email" },
+                  "notes": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "claimId": { "type": "string" },
+                    "newStatus": { "type": "string", "enum": ["approved", "rejected"] }
+                  },
+                  "required": ["success", "claimId", "newStatus"]
+                }
+              }
+            }
+          },
+          "403": { "description": "Not an admin" },
+          "404": { "description": "Claim not found" }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/review-claim",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for review claim",
+        "operationId": "admin_review_claim_preflight",
+        "tags": ["Admin"],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/review-claim",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
     "/v1/gc-core/health": {
       "get": {
         "summary": "GC-Core health check",
