@@ -646,6 +646,97 @@
         }
       }
     },
+    "/v1/onboarding/claim-org": {
+      "post": {
+        "summary": "Claim organization",
+        "description": "Proxies org claiming requests to the Supabase Edge Function `claim-org`. Creates user profile and org claim record, determines claim result based on email domain matching.",
+        "operationId": "onboarding_claim_org",
+        "tags": ["Onboarding"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["userEmail", "firstName", "lastName", "roles", "orgName", "isNewOrg"],
+                "properties": {
+                  "userEmail": { "type": "string", "format": "email" },
+                  "firstName": { "type": "string" },
+                  "lastName": { "type": "string" },
+                  "roles": { "type": "array", "items": { "type": "string" } },
+                  "web3authVerifier": { "type": "string" },
+                  "orgUri": { "type": "string" },
+                  "orgName": { "type": "string" },
+                  "orgDomain": { "type": "string" },
+                  "isNewOrg": { "type": "boolean" },
+                  "newOrgName": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Claim result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "resultVariant": { "type": "string", "enum": ["claimed", "request-sent", "manual-review", "new-org"] },
+                    "orgName": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/claim-org",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for claim-org",
+        "operationId": "onboarding_claim_org_preflight",
+        "tags": ["Onboarding"],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/claim-org",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
     "/v1/gc-core/health": {
       "get": {
         "summary": "GC-Core health check",
