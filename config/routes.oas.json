@@ -737,6 +737,90 @@
         }
       }
     },
+    "/v1/onboarding/check-user": {
+      "post": {
+        "summary": "Check if user exists",
+        "description": "Proxies to the Supabase Edge Function `check-user`. Checks if a user profile exists for the given email address.",
+        "operationId": "onboarding_check_user",
+        "tags": ["Onboarding"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": { "type": "string", "format": "email" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User check result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "exists": { "type": "boolean" },
+                    "firstName": { "type": "string" },
+                    "lastName": { "type": "string" }
+                  },
+                  "required": ["exists"]
+                }
+              }
+            }
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/check-user",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for check-user",
+        "operationId": "onboarding_check_user_preflight",
+        "tags": ["Onboarding"],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/check-user",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
     "/v1/gc-core/health": {
       "get": {
         "summary": "GC-Core health check",
