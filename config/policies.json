@@ -117,7 +117,7 @@
     {
       "name": "custom-cors",
       "allowedOrigins": "$env(ALLOWED_ORIGINS)",
-      "allowedHeaders": "origin, authorization, content-type, accept, x-api-key, x-zuplo-partner-id",
+      "allowedHeaders": "origin, authorization, content-type, accept, x-api-key, x-zuplo-partner-id, x-admin-email",
       "allowedMethods": ["GET", "POST", "OPTIONS"],
       "exposeHeaders": "x-ratelimit-remaining",
       "maxAge": 86400,
