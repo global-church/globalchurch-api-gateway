@@ -1001,6 +1001,212 @@
         }
       }
     },
+    "/v1/engagement-claims": {
+      "get": {
+        "summary": "List engagement claims",
+        "description": "Proxies to the Supabase Edge Function `list-engagement-claims`. Returns paginated engagement claims with optional filters by org, people group, country, and status.",
+        "operationId": "list_engagement_claims",
+        "tags": ["Engagement"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "orgUri",
+            "description": "Filter by claiming organization URI.",
+            "schema": { "type": "string" }
+          },
+          {
+            "in": "query",
+            "name": "rop3",
+            "description": "Filter by people group ROP3 code.",
+            "schema": { "type": "string" }
+          },
+          {
+            "in": "query",
+            "name": "countryCode",
+            "description": "Filter by ISO alpha-2 country code.",
+            "schema": { "type": "string", "minLength": 2, "maxLength": 2 }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "description": "Filter by claim status (default: active).",
+            "schema": { "type": "string", "enum": ["active", "paused", "completed"] }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Max rows to return (default 50, max 200).",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 200 }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "description": "Pagination offset (default 0).",
+            "schema": { "type": "integer", "minimum": 0 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of engagement claims",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "claims": { "type": "array", "items": { "type": "object" } },
+                    "total": { "type": "integer" }
+                  },
+                  "required": ["claims", "total"]
+                }
+              }
+            }
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/list-engagement-claims",
+              "forwardSearch": true,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for list engagement claims",
+        "operationId": "list_engagement_claims_preflight",
+        "tags": ["Engagement"],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/list-engagement-claims",
+              "forwardSearch": true,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
+    "/v1/engagement-claims/submit": {
+      "post": {
+        "summary": "Submit engagement claim",
+        "description": "Proxies to the Supabase Edge Function `submit-engagement-claim`. Creates a new self-reported engagement claim for an organization. Caller must have an approved org claim.",
+        "operationId": "submit_engagement_claim",
+        "tags": ["Engagement"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["orgUri", "orgName", "claimedByEmail", "engagementTypes"],
+                "properties": {
+                  "orgUri": { "type": "string", "description": "GraphDB URI of the claiming organization" },
+                  "orgName": { "type": "string", "description": "Display name of the organization" },
+                  "claimedByEmail": { "type": "string", "format": "email", "description": "Email of the submitting user" },
+                  "peopleGroupRop3": { "type": "string", "description": "ROP3 code of the target people group" },
+                  "peopleGroupName": { "type": "string", "description": "Display name of the people group" },
+                  "peopleGroupRog3": { "type": "string", "description": "ROG3 country code for PGIC composite key" },
+                  "countryCode": { "type": "string", "description": "ISO alpha-2 country code" },
+                  "countryName": { "type": "string", "description": "Display name of the country" },
+                  "engagementTypes": {
+                    "type": "array",
+                    "items": { "type": "string", "enum": ["CP", "DISC", "BT", "PR", "EVG", "MED", "HA", "TR", "FN"] },
+                    "minItems": 1,
+                    "description": "Engagement type notation codes"
+                  },
+                  "description": { "type": "string", "description": "Free-text description of the engagement" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Claim created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "claimId": { "type": "string", "format": "uuid" },
+                    "status": { "type": "string", "enum": ["active"] }
+                  },
+                  "required": ["claimId", "status"]
+                }
+              }
+            }
+          },
+          "400": { "description": "Validation error" },
+          "403": { "description": "No approved org claim for this organization" }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/submit-engagement-claim",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for submit engagement claim",
+        "operationId": "submit_engagement_claim_preflight",
+        "tags": ["Engagement"],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/submit-engagement-claim",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
     "/v1/gc-core/health": {
       "get": {
         "summary": "GC-Core health check",
