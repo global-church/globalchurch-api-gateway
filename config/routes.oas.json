@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "version": "1.0.0",
-    "title": "Global.Church Church API"
+    "title": "Global.Church API"
   },
   "paths": {
     "/v1/churches/search": {
