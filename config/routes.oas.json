@@ -738,8 +738,62 @@
       }
     },
     "/v1/onboarding/check-user": {
+      "get": {
+        "summary": "Check user and org claim (GET)",
+        "description": "Proxies to the Supabase Edge Function `check-user`. Returns user profile and approved org claim info for the given email.",
+        "operationId": "onboarding_check_user_get",
+        "tags": ["Onboarding"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "required": true,
+            "schema": { "type": "string", "format": "email" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User check result with optional org claim",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "exists": { "type": "boolean" },
+                    "firstName": { "type": "string" },
+                    "lastName": { "type": "string" },
+                    "orgUri": { "type": "string" },
+                    "orgName": { "type": "string" },
+                    "orgType": { "type": "string" }
+                  },
+                  "required": ["exists"]
+                }
+              }
+            }
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/check-user",
+              "forwardSearch": true,
+              "followRedirects": false
+            }
+          }
+        }
+      },
       "post": {
-        "summary": "Check if user exists",
+        "summary": "Check if user exists (POST)",
         "description": "Proxies to the Supabase Edge Function `check-user`. Checks if a user profile exists for the given email address.",
         "operationId": "onboarding_check_user",
         "tags": ["Onboarding"],
