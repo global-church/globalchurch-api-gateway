@@ -1,10 +1,10 @@
 <!--
   SYNC NOTES — When updating this file, check whether these adjacent files need changes:
-  - Parent CLAUDE.md (../CLAUDE.md) — if the gateway URL or overall routing architecture changes
-  - gc-core CLAUDE.md (../gc-core/CLAUDE.md) — if SPARQL/ingest/health routes change
+  - Root CLAUDE.md (../../CLAUDE.md) — if the gateway URL or overall routing architecture changes
+  - core CLAUDE.md (../../core/CLAUDE.md) — if SPARQL/ingest/health routes change
     (the dashboard and JP bridge call these routes)
-  - Developer site CLAUDE.md (../global.church-developer-site/CLAUDE.md) — if church search
-    routes, MCP endpoint, or auth policies change (the platform calls these routes)
+  - Platform CLAUDE.md (../../apps/platform/CLAUDE.md) — if church search routes, MCP endpoint,
+    or auth policies change (the platform calls these routes)
   Key coupling points: route paths, policy names, env var names, MCP tool schema
 -->
 
