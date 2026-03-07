@@ -4,6 +4,12 @@
     "version": "1.0.1",
     "title": "Global.Church API"
   },
+  "servers": [
+    {
+      "url": "https://api.global.church",
+      "description": "Production"
+    }
+  ],
   "paths": {
     "/v1/churches/search": {
       "get": {
@@ -33,7 +39,7 @@
           {
             "in": "query",
             "name": "belief",
-            "description": "Top-level belief family. AGENT INSTRUCTION:Only include this field if the user has explicitly requested it.",
+            "description": "Top-level belief family.",
             "schema": {
               "type": "string",
               "enum": [
@@ -45,28 +51,31 @@
                 "unknown"
               ]
             },
-            "example": "roman_catholic"
+            "example": "roman_catholic",
+            "x-agent-instructions": "Only include this field if the user has explicitly requested it"
           },
           {
             "in": "query",
             "name": "trinitarian",
-            "description": "Filter by Trinitarian belief. Currently redundant since we only support Trinitarian churches. AGENT INSTRUCTION: Never include this field.",
+            "description": "Filter by Trinitarian belief. Currently redundant since we only support Trinitarian churches.",
             "schema": {
               "type": "boolean"
             },
             "example": true,
-            "deprecated": true
+            "deprecated": true,
+            "x-agent-instructions": "Never include this field"
           },
           {
             "in": "query",
             "name": "region",
-            "description": "State/province/region code (e.g., US state). Most non-US regions are not supported. Use with caution. AGENT INSTRUCTION: You should almost never include this field.",
+            "description": "State/province/region code (e.g., US state). Most non-US regions are not supported. Use with caution.",
             "schema": {
               "type": "string",
               "minLength": 2,
               "maxLength": 32
             },
-            "example": "CA"
+            "example": "CA",
+            "x-agent-instructions": "You should almost never include this field"
           },
           {
             "in": "query",
@@ -148,24 +157,26 @@
           {
             "in": "query",
             "name": "limit",
-            "description": "Max results to return. AGENT INSTRUCTION: Default 20.",
+            "description": "Max results to return.",
             "schema": {
               "type": "integer",
               "minimum": 1,
               "maximum": 10000
             },
-            "example": 20
+            "example": 20,
+            "x-agent-instructions": "Default 20"
           },
           {
             "in": "query",
             "name": "id",
-            "description": "Filter by Global.Church's church_id field. UUIDv5 format. AGENT INSTRUCTION: You should almost never include this parameter.",
+            "description": "Filter by Global.Church's church_id field. UUIDv5 format.",
             "schema": {
               "type": "string",
               "format": "uuid",
               "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
             },
-            "example": "9e1c2a7d-4c33-4b8b-9d7a-1a2b3c4d5e6f"
+            "example": "9e1c2a7d-4c33-4b8b-9d7a-1a2b3c4d5e6f",
+            "x-agent-instructions": "You should almost never include this parameter"
           },
           {
             "in": "query",
@@ -364,7 +375,8 @@
         "tags": [
           "Churches"
         ],
-        "operationId": "churches_search_v1"
+        "operationId": "churches_search_v1",
+        "deprecated": true
       }
     },
     "/v1/churches/{id}": {
@@ -433,7 +445,8 @@
         "tags": [
           "Churches"
         ],
-        "operationId": "churches_get_v1"
+        "operationId": "churches_get_v1",
+        "deprecated": true
       }
     },
     "/mcp": {
@@ -469,7 +482,8 @@
               "ratelimit-per-partner"
             ]
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/v1/gc-core/sparql": {
@@ -554,7 +568,7 @@
             }
           },
           "400": {
-            "description": "Bad request \u2014 invalid SPARQL query"
+            "description": "Bad request — invalid SPARQL query"
           }
         },
         "x-zuplo-route": {
@@ -575,7 +589,8 @@
               "followRedirects": false
             }
           }
-        }
+        },
+        "deprecated": true
       },
       "options": {
         "summary": "CORS preflight for SPARQL",
@@ -639,7 +654,7 @@
             "description": "Triples ingested successfully"
           },
           "400": {
-            "description": "Bad request \u2014 malformed RDF data"
+            "description": "Bad request — malformed RDF data"
           },
           "422": {
             "description": "SHACL validation failed"
@@ -663,7 +678,8 @@
               "followRedirects": false
             }
           }
-        }
+        },
+        "deprecated": true
       },
       "options": {
         "summary": "CORS preflight for ingest",
@@ -782,7 +798,8 @@
               "followRedirects": false
             }
           }
-        }
+        },
+        "deprecated": true
       },
       "options": {
         "summary": "CORS preflight for hex viewport",
@@ -918,7 +935,8 @@
               "followRedirects": false
             }
           }
-        }
+        },
+        "deprecated": true
       },
       "options": {
         "summary": "CORS preflight for claim-org",
@@ -1020,7 +1038,8 @@
               "followRedirects": false
             }
           }
-        }
+        },
+        "deprecated": true
       },
       "post": {
         "summary": "Check if user exists (POST)",
@@ -1092,7 +1111,8 @@
               "followRedirects": false
             }
           }
-        }
+        },
+        "deprecated": true
       },
       "options": {
         "summary": "CORS preflight for check-user",
@@ -1215,7 +1235,8 @@
               "followRedirects": false
             }
           }
-        }
+        },
+        "deprecated": true
       },
       "options": {
         "summary": "CORS preflight for list claims",
@@ -1344,7 +1365,8 @@
               "followRedirects": false
             }
           }
-        }
+        },
+        "deprecated": true
       },
       "options": {
         "summary": "CORS preflight for review claim",
@@ -1487,7 +1509,8 @@
               "followRedirects": false
             }
           }
-        }
+        },
+        "deprecated": true
       },
       "options": {
         "summary": "CORS preflight for list engagement claims",
@@ -1651,7 +1674,8 @@
               "followRedirects": false
             }
           }
-        }
+        },
+        "deprecated": true
       },
       "options": {
         "summary": "CORS preflight for submit engagement claim",
@@ -1732,7 +1756,8 @@
               "followRedirects": false
             }
           }
-        }
+        },
+        "deprecated": true
       },
       "options": {
         "summary": "CORS preflight for health",
@@ -1790,7 +1815,7 @@
           {
             "in": "query",
             "name": "belief",
-            "description": "Top-level belief family. AGENT INSTRUCTION:Only include this field if the user has explicitly requested it.",
+            "description": "Top-level belief family.",
             "schema": {
               "type": "string",
               "enum": [
@@ -1802,28 +1827,31 @@
                 "unknown"
               ]
             },
-            "example": "roman_catholic"
+            "example": "roman_catholic",
+            "x-agent-instructions": "Only include this field if the user has explicitly requested it"
           },
           {
             "in": "query",
             "name": "trinitarian",
-            "description": "Filter by Trinitarian belief. Currently redundant since we only support Trinitarian churches. AGENT INSTRUCTION: Never include this field.",
+            "description": "Filter by Trinitarian belief. Currently redundant since we only support Trinitarian churches.",
             "schema": {
               "type": "boolean"
             },
             "example": true,
-            "deprecated": true
+            "deprecated": true,
+            "x-agent-instructions": "Never include this field"
           },
           {
             "in": "query",
             "name": "region",
-            "description": "State/province/region code (e.g., US state). Most non-US regions are not supported. Use with caution. AGENT INSTRUCTION: You should almost never include this field.",
+            "description": "State/province/region code (e.g., US state). Most non-US regions are not supported. Use with caution.",
             "schema": {
               "type": "string",
               "minLength": 2,
               "maxLength": 32
             },
-            "example": "CA"
+            "example": "CA",
+            "x-agent-instructions": "You should almost never include this field"
           },
           {
             "in": "query",
@@ -1905,24 +1933,26 @@
           {
             "in": "query",
             "name": "limit",
-            "description": "Max results to return. AGENT INSTRUCTION: Default 20.",
+            "description": "Max results to return.",
             "schema": {
               "type": "integer",
               "minimum": 1,
               "maximum": 10000
             },
-            "example": 20
+            "example": 20,
+            "x-agent-instructions": "Default 20"
           },
           {
             "in": "query",
             "name": "id",
-            "description": "Filter by Global.Church's church_id field. UUIDv5 format. AGENT INSTRUCTION: You should almost never include this parameter.",
+            "description": "Filter by Global.Church's church_id field. UUIDv5 format.",
             "schema": {
               "type": "string",
               "format": "uuid",
               "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
             },
-            "example": "9e1c2a7d-4c33-4b8b-9d7a-1a2b3c4d5e6f"
+            "example": "9e1c2a7d-4c33-4b8b-9d7a-1a2b3c4d5e6f",
+            "x-agent-instructions": "You should almost never include this parameter"
           },
           {
             "in": "query",
@@ -2081,7 +2111,7 @@
                         "items": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/components/schemas/ChurchV1"
+                            "$ref": "#/components/schemas/Organization"
                           }
                         }
                       },
@@ -2158,7 +2188,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChurchV1"
+                  "$ref": "#/components/schemas/Organization"
                 }
               }
             }
@@ -2271,47 +2301,13 @@
             "content": {
               "application/sparql-results+json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "head": {
-                      "type": "object",
-                      "properties": {
-                        "vars": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        }
-                      },
-                      "required": [
-                        "vars"
-                      ]
-                    },
-                    "results": {
-                      "type": "object",
-                      "properties": {
-                        "bindings": {
-                          "type": "array",
-                          "items": {
-                            "type": "object"
-                          }
-                        }
-                      },
-                      "required": [
-                        "bindings"
-                      ]
-                    }
-                  },
-                  "required": [
-                    "head",
-                    "results"
-                  ]
+                  "$ref": "#/components/schemas/SPARQLResults"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request \u2014 invalid SPARQL query"
+            "description": "Bad request — invalid SPARQL query"
           }
         },
         "x-zuplo-route": {
@@ -2396,7 +2392,7 @@
             "description": "Triples ingested successfully"
           },
           "400": {
-            "description": "Bad request \u2014 malformed RDF data"
+            "description": "Bad request — malformed RDF data"
           },
           "422": {
             "description": "SHACL validation failed"
@@ -2512,7 +2508,7 @@
                     "hexes": {
                       "type": "array",
                       "items": {
-                        "type": "object"
+                        "$ref": "#/components/schemas/HexCell"
                       }
                     }
                   }
@@ -3309,7 +3305,7 @@
                     "claims": {
                       "type": "array",
                       "items": {
-                        "type": "object"
+                        "$ref": "#/components/schemas/EngagementClaim"
                       }
                     },
                     "total": {
@@ -3894,7 +3890,228 @@
             }
           }
         }
+      },
+      "Organization": {
+        "$ref": "#/components/schemas/ChurchV1",
+        "description": "An organization in the Global.Church directory. Historically named 'Church' in v1, renamed to 'Organization' in v0 to reflect broader scope."
+      },
+      "EngagementClaim": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "org_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "org_name": {
+            "type": "string"
+          },
+          "rop3": {
+            "type": "integer",
+            "description": "ROP3 people group code"
+          },
+          "rog3": {
+            "type": "string",
+            "description": "ROG3 country code"
+          },
+          "people_group_name": {
+            "type": "string"
+          },
+          "country_name": {
+            "type": "string"
+          },
+          "engagement_type": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "approved",
+              "rejected"
+            ]
+          },
+          "submitted_by": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reviewed_by": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "OrgClaim": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "org_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "org_name": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "user_email": {
+            "type": "string",
+            "format": "email"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "approved",
+              "rejected"
+            ]
+          },
+          "org_role": {
+            "type": "string",
+            "enum": [
+              "org_admin",
+              "org_contributor",
+              "org_member"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reviewed_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "HexCell": {
+        "type": "object",
+        "properties": {
+          "h3Index": {
+            "type": "string",
+            "description": "H3 hex cell index"
+          },
+          "lat": {
+            "type": "number"
+          },
+          "lng": {
+            "type": "number"
+          },
+          "population": {
+            "type": "number"
+          },
+          "rop3": {
+            "type": "integer",
+            "nullable": true
+          },
+          "people_group_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "type": "string"
+          }
+        }
+      },
+      "SPARQLResults": {
+        "type": "object",
+        "description": "W3C SPARQL Query Results JSON Format",
+        "properties": {
+          "head": {
+            "type": "object",
+            "properties": {
+              "vars": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "results": {
+            "type": "object",
+            "properties": {
+              "bindings": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "uri",
+                          "literal",
+                          "bnode"
+                        ]
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "datatype": {
+                        "type": "string"
+                      },
+                      "xml:lang": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "statusCode": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "error",
+          "message"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "API key issued from platform.global.church. Pass as: Authorization: Bearer {api_key}"
       }
     }
-  }
+  },
+  "security": [
+    {
+      "apiKey": []
+    }
+  ]
 }
