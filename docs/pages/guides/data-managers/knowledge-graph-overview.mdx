@@ -1,15 +1,117 @@
 ---
 title: Knowledge Graph Overview
-description: Understanding the Global.Church knowledge graph — what data it contains, how it's structured, and how to explore it.
+description: A non-technical introduction to the Global.Church knowledge graph and what data it contains.
 ---
 
 # Knowledge Graph Overview
 
-This page will cover:
-- What's in the graph: ~3.2M triples spanning people groups, organizations, assessments, resources, and geographic/linguistic/religious classifications
-- Data sources and their named graphs: Joshua Project, IMB, HIS Registries (ROP, ROL, ROR, ROG), IMB Resources, Jesus Film, FCBH
-- The GC Ontology as the unifying schema: how all sources map to shared classes and properties
-- How the two integration patterns feed the graph: bridge materialization (batch) and SPARQL federation (runtime)
-- Exploring the graph: using the platform's SPARQL interface or the API gateway's `/v0/sparql` endpoint
+This guide explains what the Global.Church knowledge graph is, what data it contains, and how it connects to the tools you use every day. It is written for data managers and organizational leaders, not developers.
 
-> Content will be provided by the documentation content authors.
+---
+
+## What is a Knowledge Graph?
+
+A knowledge graph is a structured database that connects information using relationships. Instead of storing data in rows and columns like a spreadsheet, it stores *facts* as connections between things.
+
+Think of it as a giant web of facts:
+
+- "Wycliffe" -- *works with* -- "Quechua people"
+- "Quechua people" -- *located in* -- "Peru"
+- "Quechua people" -- *speaks* -- "Quechua language"
+- "Quechua people" -- *assessed by* -- "Joshua Project"
+
+Each fact links two things with a relationship. When you connect millions of these facts together, you can ask questions that span multiple organizations and data sources -- questions that no single organization could answer on its own.
+
+---
+
+## What is in Our Graph?
+
+The Global.Church knowledge graph contains approximately 3.2 million facts, covering:
+
+- **37,000+ organizations** -- churches, mission agencies, denominations, and networks from the Global.Church platform directory
+- **17,000+ people groups** -- people-group-in-country records from Joshua Project, including population, language, religion, and geographic classifications
+- **12,000+ IMB assessments** -- engagement status, church planting progress, and evangelical levels from the International Mission Board
+- **Mission resources** -- 2,485 Jesus Film links, 2,004 Scripture audio resources from Faith Comes By Hearing, and 570 media/training resources from IMB Collections
+- **HIS registry data** -- standardized codes for peoples (ROP), languages (ROL), religions (ROR), and geography (ROG) from the HIS Registries consortium
+- **Engagement claims** -- self-reported organizational engagement with people groups, submitted through the platform
+
+---
+
+## Where Does the Data Come From?
+
+Data enters the knowledge graph through two paths:
+
+### Bridges (Automated)
+
+Bridges are automated pipelines that pull data from external sources, transform it into the Global.Church format, and load it into the graph. Current bridges include:
+
+- **Joshua Project bridge** -- pulls people group data from the Joshua Project API
+- **HIS Registry bridge** -- loads standardized people, language, religion, and geography codes
+- **IMB bridge** -- loads assessment and resource data from IMB
+- **Organization bridge** -- syncs organization records from the Global.Church platform database
+- **Engagement bridge** -- materializes approved engagement claims into the graph
+
+### Platform Submissions (Manual)
+
+Organizations submit data through the Global.Church platform:
+
+- **Engagement claims** -- "Our organization works with the Fulani in Nigeria." These go through a review process before being added to the graph.
+- **Organization profiles** -- Organizations register and maintain their profiles on the platform.
+
+---
+
+## Named Graphs: How Data Stays Organized
+
+Each data source has its own "container" in the knowledge graph called a named graph. This keeps data organized and traceable:
+
+| Container | What is inside |
+|---|---|
+| Joshua Project graph | 17K+ people group records with demographics and classifications |
+| IMB graph | 12K+ assessment records with engagement metrics |
+| HIS Registries graph | Standardized codes for peoples, languages, religions, and geography |
+| Organizations graph | 37K+ organization profiles |
+| Engagement Claims graph | Approved engagement claims from organizations |
+| IMB Resources graph | 570 media and training resources |
+| Jesus Film Resources graph | 2,485 film links by language |
+| FCBH Resources graph | 2,004 Scripture audio resources |
+
+Named graphs matter because:
+
+- **Traceability** -- You can always tell where a fact came from. "This assessment came from Joshua Project" vs. "This assessment came from IMB."
+- **Different perspectives** -- Joshua Project and IMB might assess the same people group differently. Both assessments are preserved with their source, rather than one overwriting the other.
+- **Updates without disruption** -- When a bridge refreshes data, it only updates its own container. Other data sources are unaffected.
+
+---
+
+## How It Connects to the Platform
+
+The knowledge graph powers the tools you interact with:
+
+- **Engage dashboard** ([engage.global.church](https://engage.global.church)) -- The map visualization, people group explorer, and resource explorer all query the knowledge graph through the API gateway. When you search for unreached people groups or explore resources by language, those results come from the graph.
+
+- **Platform** ([platform.global.church](https://platform.global.church)) -- The church explorer, 3D globe, and MCP chat interface query the graph. The AI agent translates your natural-language questions into graph queries.
+
+- **API gateway** ([api.global.church](https://api.global.church)) -- Developers and partner applications query the graph through the API, using the same data that powers the dashboard.
+
+All three access the same underlying data. When an engagement claim is approved and loaded into the graph, it becomes visible across all applications.
+
+---
+
+## Common Questions
+
+**Can different organizations disagree about the same people group?**
+Yes. Joshua Project and IMB often have different assessment scores for the same people group. Both are stored with their source attribution. The platform presents both perspectives rather than forcing a single "truth."
+
+**How fresh is the data?**
+Bridge data is refreshed periodically (currently manually, with scheduled automation planned). Each record carries a timestamp showing when it was last synced. Engagement claims appear in the graph shortly after admin approval.
+
+**What happens when I submit an engagement claim?**
+Your claim goes through a review process. Once approved by an admin, it is transformed into the graph format and loaded into the engagement claims named graph. See [Reviewing Claims](/guides/data-managers/reviewing-claims) for the full workflow.
+
+---
+
+## Next Steps
+
+- [Data Quality and SHACL](/guides/data-managers/data-quality-shacl) -- how data is validated before entering the graph
+- [Reviewing Claims](/guides/data-managers/reviewing-claims) -- the claim review workflow
+- [Adding a Country](/guides/data-managers/adding-a-country) -- how to add a new country to the engage dashboard map

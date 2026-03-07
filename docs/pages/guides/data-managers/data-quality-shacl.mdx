@@ -1,16 +1,170 @@
 ---
-title: Data Quality & SHACL Validation
-description: How SHACL shapes enforce data quality in the Global.Church knowledge graph.
+title: Data Quality and SHACL
+description: How the Global.Church knowledge graph validates data using SHACL constraint shapes.
 ---
 
-# Data Quality & SHACL Validation
+# Data Quality and SHACL
 
-This page will cover:
-- What SHACL is and why it matters: constraint-based validation for RDF data
-- The GC SHACL shapes: OrganizationShape, ChurchOrganizationShape, AssessmentResultShape, and others
-- How validation works: required properties, value types, cardinality constraints, and controlled vocabularies
-- Running SHACL validation locally with pyshacl before submitting data
-- Common validation errors and how to fix them
-- How shapes evolve with the ontology: the relationship between `core.ttl` and `shacl.ttl`
+Every piece of data that enters the Global.Church knowledge graph is validated against a set of rules before it is accepted. These rules are defined using SHACL -- the Shapes Constraint Language. This guide explains what SHACL does, what it checks, and how to understand validation errors.
 
-> Content will be provided by the documentation content authors.
+---
+
+## What is SHACL?
+
+SHACL (pronounced "shackle") is a W3C standard for defining rules that data must follow. Think of it as a quality checklist: before data enters the knowledge graph, SHACL checks that it meets the requirements.
+
+Examples of rules SHACL can enforce:
+
+- "Every Organization must have a name."
+- "An Organization can have at most one website URL."
+- "The organization type must be a valid concept from the approved list."
+
+These rules are called **shapes** because they define the expected "shape" of valid data.
+
+---
+
+## What We Validate
+
+The Global.Church SHACL shapes check three categories:
+
+### Required Fields
+
+Certain properties must be present. For example, every Organization must have:
+- A name (`rdfs:label`) -- at least one
+- An organization type (`gc:hasOrganizationType`) -- at least one, must be a valid SKOS concept
+
+### Value Types
+
+Properties must contain the right kind of data:
+- `gc:website` must be a valid URI (not just a text string)
+- `gc:email` must be a string
+- `gc:phone` must be a string
+- Dates must be valid date/datetime values
+
+### Cardinality
+
+Some properties can only appear once per entity:
+- An Organization can have at most one website (`sh:maxCount 1`)
+- An Organization can have at most one email (`sh:maxCount 1`)
+- But an Organization can have multiple organization types
+
+---
+
+## Example Shape
+
+Here is a simplified version of the Organization shape, showing what it checks:
+
+```turtle
+:OrganizationShape a sh:NodeShape ;
+  sh:targetClass gc:Organization ;
+
+  # Required: every org must have a name
+  sh:property [
+    sh:path rdfs:label ;
+    sh:minCount 1 ;
+    sh:description "Organization name (required)." ;
+  ] ;
+
+  # Required: at least one organization type
+  sh:property [
+    sh:path gc:hasOrganizationType ;
+    sh:class skos:Concept ;
+    sh:minCount 1 ;
+    sh:message "Every Organization must have at least one gc:hasOrganizationType." ;
+  ] ;
+
+  # Optional but validated: website must be a URI
+  sh:property [
+    sh:path gc:website ;
+    sh:datatype xsd:anyURI ;
+    sh:maxCount 1 ;
+  ] ;
+
+  # Optional but validated: email must be a string
+  sh:property [
+    sh:path gc:email ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+  ] .
+```
+
+Reading this shape: "Any entity typed as `gc:Organization` must have at least one label and at least one organization type. If it has a website, there can be only one and it must be a valid URI."
+
+---
+
+## When Validation Runs
+
+SHACL validation runs at a specific point in the data lifecycle:
+
+1. **Data is submitted** via the ingest API (`POST /v0/ingest`).
+2. **SHACL validation runs** against the submitted data.
+3. **If all shapes pass**, the data is loaded into the organization's named graph in GraphDB.
+4. **If any shape fails**, the submission is rejected with a `422 Unprocessable Entity` response and a list of violations.
+
+This means invalid data never enters the knowledge graph. Validation acts as a gate, not a post-hoc audit.
+
+---
+
+## Understanding Errors
+
+When validation fails, the API returns a report listing each violation. Here is an example:
+
+```json
+{
+  "error": "SHACL validation failed",
+  "violations": [
+    {
+      "focusNode": "https://data.global.church/org/my-church",
+      "path": "http://www.w3.org/2000/01/rdf-schema#label",
+      "message": "Organization name (required).",
+      "severity": "Violation"
+    },
+    {
+      "focusNode": "https://data.global.church/org/my-church",
+      "path": "https://ontology.global.church/core#hasOrganizationType",
+      "message": "Every Organization must have at least one gc:hasOrganizationType.",
+      "severity": "Violation"
+    }
+  ]
+}
+```
+
+Each violation tells you:
+- **focusNode** -- which entity has the problem
+- **path** -- which property is missing or invalid
+- **message** -- a human-readable description of the rule that was broken
+- **severity** -- `Violation` (must fix), `Warning` (should fix), or `Info` (recommendation)
+
+---
+
+## Severity Levels
+
+Not all shape constraints are equally strict:
+
+| Severity | Meaning | Effect |
+|---|---|---|
+| **Violation** | Data does not meet a required constraint | Submission rejected |
+| **Warning** | Data is missing a recommended property | Submission accepted with warnings |
+| **Info** | Data is missing an optional but helpful property | Submission accepted, informational only |
+
+For example, having a location (`gc:hasLocation`) is marked as `Info` severity -- it is helpful but not required. Having a name (`rdfs:label`) is a `Violation` -- it is mandatory.
+
+---
+
+## Common Issues
+
+**Missing required name.** Every Organization must have an `rdfs:label`. If your data uses a different property for the name (e.g., just `gc:orgName` without `rdfs:label`), add the label.
+
+**Wrong data type for URLs.** The `gc:website` property expects an `xsd:anyURI` value. If you provide a plain string like `"example.com"`, it may fail. Use a full URI like `"https://example.com"`.
+
+**Missing organization type.** Every Organization needs at least one `gc:hasOrganizationType` linking to a concept from the OrganizationTypeScheme (Church, MissionAgency, Denomination, Network, etc.).
+
+**Invalid classification links.** Properties like `gc:hasBeliefClassification` must point to valid SKOS concepts that exist in the graph. Check the vocabulary graphs for valid concept URIs.
+
+---
+
+## Next Steps
+
+- [Knowledge Graph Overview](/guides/data-managers/knowledge-graph-overview) -- understand what data is in the graph
+- [Data Modeling Cookbook](/guides/developers/data-modeling-cookbook) -- see correctly structured examples
+- [Contributing Linked Data](/guides/developers/contributing-linked-data) -- submit data through the ingest API

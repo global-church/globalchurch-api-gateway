@@ -1,16 +1,354 @@
 ---
 title: SPARQL Quickstart
-description: Learn how to query the Global.Church knowledge graph using SPARQL through the API gateway.
+description: Five worked SPARQL queries against the Global.Church API with curl and JavaScript examples.
 ---
 
 # SPARQL Quickstart
 
-This page will cover:
-- Sending your first SPARQL query via `POST /v0/sparql` with your API key
-- The GC namespace prefixes you need: `gc:`, `jp:`, `imb:`, `skos:`, `prov:`
-- Example queries: listing people groups by country, finding unreached peoples, querying assessment results
-- Understanding the 3-block Assessment pattern: PeopleGroup + Assessment (provenance) + AssessmentResult (metrics)
-- Working with named graphs: scoping queries to specific data sources like Joshua Project or IMB
-- Accept headers for different response formats: JSON, CSV, Turtle
+This guide walks through five SPARQL queries you can run against the Global.Church knowledge graph. Each example shows both a `curl` command and a JavaScript `fetch` equivalent.
 
-> Content will be provided by the documentation content authors.
+All queries go through the API gateway at `https://api.global.church/v0/sparql`. You need an API key -- get one from the developer portal at [platform.global.church/developer](https://platform.global.church/developer).
+
+## Authentication
+
+Every request requires an `Authorization` header with your API key:
+
+```
+Authorization: Bearer YOUR_API_KEY
+```
+
+The SPARQL endpoint accepts `POST` requests with `Content-Type: application/sparql-query`. Responses come back as `application/sparql-results+json` by default.
+
+---
+
+## Query 1: Count All Triples
+
+A simple health check -- how much data is in the graph?
+
+```sparql
+SELECT (COUNT(*) AS ?count) WHERE { ?s ?p ?o }
+```
+
+**curl:**
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/sparql-query" \
+  -d 'SELECT (COUNT(*) AS ?count) WHERE { ?s ?p ?o }' \
+  "https://api.global.church/v0/sparql"
+```
+
+**JavaScript:**
+
+```javascript
+const query = `SELECT (COUNT(*) AS ?count) WHERE { ?s ?p ?o }`;
+
+const response = await fetch("https://api.global.church/v0/sparql", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/sparql-query",
+  },
+  body: query,
+});
+
+const data = await response.json();
+console.log("Triple count:", data.results.bindings[0].count.value);
+```
+
+**What to expect:** A single row with a `count` value. The current graph has approximately 3.2 million triples across all named graphs.
+
+---
+
+## Query 2: List Organizations in a Country
+
+Find organizations by country code, with optional city and state.
+
+```sparql
+PREFIX gc: <https://ontology.global.church/core#>
+SELECT ?name ?city ?state WHERE {
+  ?org a gc:Organization ;
+       gc:orgName ?name ;
+       gc:country "US" .
+  OPTIONAL { ?org gc:city ?city }
+  OPTIONAL { ?org gc:state ?state }
+} LIMIT 20
+```
+
+**curl:**
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/sparql-query" \
+  -d 'PREFIX gc: <https://ontology.global.church/core#>
+SELECT ?name ?city ?state WHERE {
+  ?org a gc:Organization ;
+       gc:orgName ?name ;
+       gc:country "US" .
+  OPTIONAL { ?org gc:city ?city }
+  OPTIONAL { ?org gc:state ?state }
+} LIMIT 20' \
+  "https://api.global.church/v0/sparql"
+```
+
+**JavaScript:**
+
+```javascript
+const query = `
+PREFIX gc: <https://ontology.global.church/core#>
+SELECT ?name ?city ?state WHERE {
+  ?org a gc:Organization ;
+       gc:orgName ?name ;
+       gc:country "US" .
+  OPTIONAL { ?org gc:city ?city }
+  OPTIONAL { ?org gc:state ?state }
+} LIMIT 20`;
+
+const response = await fetch("https://api.global.church/v0/sparql", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/sparql-query",
+  },
+  body: query,
+});
+
+const data = await response.json();
+data.results.bindings.forEach((row) => {
+  console.log(row.name.value, row.city?.value, row.state?.value);
+});
+```
+
+**What to expect:** Up to 20 rows, each with an organization name and optionally a city and state. The graph contains 37,000+ organizations materialized from Supabase. Change `"US"` to any ISO 3166-1 alpha-2 country code.
+
+---
+
+## Query 3: Find Unengaged People Groups
+
+People groups with no known engagement activity from any organization.
+
+```sparql
+PREFIX gc: <https://ontology.global.church/core#>
+PREFIX jp: <https://ontology.global.church/joshuaproject#>
+SELECT ?pgName ?country WHERE {
+  ?pg a gc:PeopleGroup ;
+      gc:peopleName ?pgName ;
+      gc:country ?country .
+  FILTER NOT EXISTS { ?activity gc:engagesPeopleGroup ?pg }
+} LIMIT 20
+```
+
+**curl:**
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/sparql-query" \
+  -d 'PREFIX gc: <https://ontology.global.church/core#>
+PREFIX jp: <https://ontology.global.church/joshuaproject#>
+SELECT ?pgName ?country WHERE {
+  ?pg a gc:PeopleGroup ;
+      gc:peopleName ?pgName ;
+      gc:country ?country .
+  FILTER NOT EXISTS { ?activity gc:engagesPeopleGroup ?pg }
+} LIMIT 20' \
+  "https://api.global.church/v0/sparql"
+```
+
+**JavaScript:**
+
+```javascript
+const query = `
+PREFIX gc: <https://ontology.global.church/core#>
+PREFIX jp: <https://ontology.global.church/joshuaproject#>
+SELECT ?pgName ?country WHERE {
+  ?pg a gc:PeopleGroup ;
+      gc:peopleName ?pgName ;
+      gc:country ?country .
+  FILTER NOT EXISTS { ?activity gc:engagesPeopleGroup ?pg }
+} LIMIT 20`;
+
+const response = await fetch("https://api.global.church/v0/sparql", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/sparql-query",
+  },
+  body: query,
+});
+
+const data = await response.json();
+data.results.bindings.forEach((row) => {
+  console.log(row.pgName.value, "in", row.country.value);
+});
+```
+
+**What to expect:** People group names and country codes where no engagement has been recorded. Note the open-world caveat: "no known engagement" means no engagement triple exists in the graph -- it could mean unengaged or simply unreported. The `FILTER NOT EXISTS` pattern is the standard way to find gaps in RDF data.
+
+---
+
+## Query 4: Get Assessment Data for a People Group
+
+Uses the 3-block pattern: PeopleGroup + Assessment + AssessmentResult. Assessment data (JP Scale, percent Christian, etc.) lives on `gc:AssessmentResult`, not directly on the people group.
+
+```sparql
+PREFIX gc: <https://ontology.global.church/core#>
+PREFIX jp: <https://ontology.global.church/joshuaproject#>
+SELECT ?pgName ?jpScale ?percentChristian WHERE {
+  ?pg a gc:PeopleGroup ; gc:peopleName ?pgName .
+  ?result a gc:AssessmentResult ;
+          gc:resultForPeopleGroup ?pg ;
+          jp:jpScale ?jpScale ;
+          jp:percentChristian ?percentChristian .
+} LIMIT 20
+```
+
+**curl:**
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/sparql-query" \
+  -d 'PREFIX gc: <https://ontology.global.church/core#>
+PREFIX jp: <https://ontology.global.church/joshuaproject#>
+SELECT ?pgName ?jpScale ?percentChristian WHERE {
+  ?pg a gc:PeopleGroup ; gc:peopleName ?pgName .
+  ?result a gc:AssessmentResult ;
+          gc:resultForPeopleGroup ?pg ;
+          jp:jpScale ?jpScale ;
+          jp:percentChristian ?percentChristian .
+} LIMIT 20' \
+  "https://api.global.church/v0/sparql"
+```
+
+**JavaScript:**
+
+```javascript
+const query = `
+PREFIX gc: <https://ontology.global.church/core#>
+PREFIX jp: <https://ontology.global.church/joshuaproject#>
+SELECT ?pgName ?jpScale ?percentChristian WHERE {
+  ?pg a gc:PeopleGroup ; gc:peopleName ?pgName .
+  ?result a gc:AssessmentResult ;
+          gc:resultForPeopleGroup ?pg ;
+          jp:jpScale ?jpScale ;
+          jp:percentChristian ?percentChristian .
+} LIMIT 20`;
+
+const response = await fetch("https://api.global.church/v0/sparql", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/sparql-query",
+  },
+  body: query,
+});
+
+const data = await response.json();
+data.results.bindings.forEach((row) => {
+  console.log(
+    row.pgName.value,
+    "JP Scale:", row.jpScale.value,
+    "% Christian:", row.percentChristian.value
+  );
+});
+```
+
+**What to expect:** People group names with their Joshua Project progress scale value (1-5) and percentage of Christian adherents. This is the 3-block assessment pattern used throughout the knowledge graph -- assessment metrics are always on `gc:AssessmentResult`, linked to the people group via `gc:resultForPeopleGroup`. Both Joshua Project and IMB data follow this same pattern.
+
+---
+
+## Query 5: Search Organizations with Coordinates
+
+Find organizations that have latitude and longitude data.
+
+```sparql
+PREFIX gc: <https://ontology.global.church/core#>
+SELECT ?name ?lat ?lng WHERE {
+  ?org a gc:Organization ;
+       gc:orgName ?name ;
+       gc:latitude ?lat ;
+       gc:longitude ?lng .
+} LIMIT 10
+```
+
+**curl:**
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/sparql-query" \
+  -d 'PREFIX gc: <https://ontology.global.church/core#>
+SELECT ?name ?lat ?lng WHERE {
+  ?org a gc:Organization ;
+       gc:orgName ?name ;
+       gc:latitude ?lat ;
+       gc:longitude ?lng .
+} LIMIT 10' \
+  "https://api.global.church/v0/sparql"
+```
+
+**JavaScript:**
+
+```javascript
+const query = `
+PREFIX gc: <https://ontology.global.church/core#>
+SELECT ?name ?lat ?lng WHERE {
+  ?org a gc:Organization ;
+       gc:orgName ?name ;
+       gc:latitude ?lat ;
+       gc:longitude ?lng .
+} LIMIT 10`;
+
+const response = await fetch("https://api.global.church/v0/sparql", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/sparql-query",
+  },
+  body: query,
+});
+
+const data = await response.json();
+data.results.bindings.forEach((row) => {
+  console.log(row.name.value, `(${row.lat.value}, ${row.lng.value})`);
+});
+```
+
+**What to expect:** Organization names with their geographic coordinates. Not all organizations have coordinates -- many have only city/state/country. You can combine this with a `FILTER` to search within a bounding box for geographic proximity queries.
+
+---
+
+## Response Format
+
+All queries return SPARQL Results JSON. The structure looks like this:
+
+```json
+{
+  "head": {
+    "vars": ["name", "city", "state"]
+  },
+  "results": {
+    "bindings": [
+      {
+        "name": { "type": "literal", "value": "Example Church" },
+        "city": { "type": "literal", "value": "Denver" }
+      }
+    ]
+  }
+}
+```
+
+Each binding is an object where keys match the `SELECT` variable names. Optional values (from `OPTIONAL` clauses) may be missing from individual bindings.
+
+## Rate Limits
+
+The API gateway enforces 100 requests per minute per API key. For bulk data needs, consider requesting a higher limit or using the ingest API to contribute data directly.
+
+## Next Steps
+
+- [Data Modeling Cookbook](/guides/developers/data-modeling-cookbook) -- understand how entities are structured in the graph
+- [Contributing Linked Data](/guides/developers/contributing-linked-data) -- submit your own data to the knowledge graph
+- [MCP Integration](/guides/developers/mcp-integration) -- query the graph from AI assistants

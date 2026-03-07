@@ -1,16 +1,210 @@
 ---
 title: Contributing Linked Data
-description: How to contribute RDF data to the Global.Church knowledge graph via the ingest API.
+description: How to submit data to the Global.Church knowledge graph using bridges or federation.
 ---
 
 # Contributing Linked Data
 
-This page will cover:
-- Using `POST /v0/ingest` to submit RDF triples (Turtle, N-Triples, or RDF/XML format)
-- Namespace and URI conventions your data must follow (ontology.global.church prefixes, data.global.church URIs)
-- Named graph isolation: how contributed data is kept separate from other sources
-- SHACL validation: what shapes your data must conform to before acceptance
-- The review workflow: how data stewards approve or reject contributed data
-- Building a bridge: the pattern for creating a batch pipeline from your data source to GraphDB
+The Global.Church knowledge graph accepts data from external organizations through two integration patterns. This guide explains both, helps you choose the right one, and walks through the submission process.
 
-> Content will be provided by the documentation content authors.
+---
+
+## Two Integration Patterns
+
+### Pattern A: Bridge Materialization
+
+Data is pulled from your systems, transformed to RDF using the GC ontology, and loaded into the central GraphDB instance. Each source gets its own named graph. Queries run against one triplestore.
+
+**Best for:**
+- Source data that changes infrequently (people group classifications, reference hierarchies)
+- Batch data sharing
+- Low-latency query requirements
+- Data that can be cached without freshness concerns
+
+**Flow:**
+
+```
+Your API/Data ── Bridge Package ── RDF Transform ── SHACL Validate ── GraphDB Named Graph
+```
+
+### Pattern B: SPARQL Federation
+
+Queries are dispatched at runtime to your SPARQL endpoint using the `SERVICE` keyword. Data stays in your system. You maintain your own endpoint (or an adapter that exposes one).
+
+**Best for:**
+- Data that changes frequently and freshness matters
+- Organizations that require data sovereignty (data cannot leave your infrastructure)
+- Real-time cross-organizational queries
+- Regulatory or policy constraints that prevent data duplication
+
+**Flow:**
+
+```
+Federation Query ── SERVICE keyword ── Your SPARQL Endpoint
+                └── Local graph        (materialized data)
+
+Joins on shared GC ontology URIs
+```
+
+### Hybrid: Both Together
+
+The production system uses both patterns simultaneously. Materialized data covers reference data and batch-synced records. Federated queries extend to real-time cross-org data. A single SPARQL query can join local named graphs with remote endpoints.
+
+---
+
+## Decision Tree
+
+Use this to determine which pattern fits your situation:
+
+1. **Do you have batch data to share?** (CSV exports, API dumps, periodic syncs)
+   - Yes -- Pattern A (Bridge Materialization)
+   - No, you need real-time queries -- go to step 2
+
+2. **Can your data leave your infrastructure?**
+   - Yes -- Pattern A is simpler; consider a bridge
+   - No (sovereignty requirements) -- Pattern B (Federation)
+
+3. **Do you already have a SPARQL endpoint?**
+   - Yes -- Pattern B is natural
+   - No -- Pattern A is faster to set up; or we can help build an RDF mapping adapter
+
+Most organizations start with Pattern A because it is simpler to implement and proves value faster. Pattern B is available when you need it.
+
+---
+
+## Building a Bridge (Pattern A)
+
+### Step 1: Map Your Data to the GC Ontology
+
+Identify which GC ontology classes match your data. The most common:
+
+| Your data | GC class | Key properties |
+|---|---|---|
+| Organizations / churches | `gc:Organization` | `gc:orgName`, `gc:country`, `gc:hasOrganizationType` |
+| People group records | `gc:PeopleGroup` | `gc:peopleName`, `gc:country`, `gc:hasPeopleClassification` |
+| Assessment / survey data | `gc:AssessmentResult` | `gc:resultForPeopleGroup`, metric properties |
+| Ministry activities | `gc:MinistryActivity` | `gc:engagesPeopleGroup`, `prov:wasAssociatedWith` |
+
+See the [Data Modeling Cookbook](/guides/developers/data-modeling-cookbook) for complete Turtle and JSON-LD examples of each type.
+
+### Step 2: Generate RDF
+
+Transform your data into Turtle or JSON-LD format. Use the URI patterns from the ontology:
+
+- Organizations: `https://data.global.church/org/{your-slug}`
+- Your named graph: `https://data.global.church/{your-org-slug}/`
+
+Link to shared reference data using the HIS classification properties:
+- `gc:hasPeopleClassification` -- link to ROP3 codes (`https://data.global.church/his/rop3/{code}`)
+- `gc:hasLanguageClassification` -- link to ROL codes (`https://data.global.church/his/rol/{iso639-3}`)
+- `gc:hasReligionClassification` -- link to ROR codes (`https://data.global.church/his/ror/{code}`)
+- `gc:hasGeographyClassification` -- link to ROG codes (`https://data.global.church/his/rog/{code}`)
+
+### Step 3: Validate Against SHACL Shapes
+
+Before submitting, validate your data against the SHACL shapes. The ingest API does this automatically, but you can catch errors early by running validation locally with a tool like `pyshacl`:
+
+```bash
+pip install pyshacl
+pyshacl -s core.shacl.ttl -df turtle my-data.ttl
+```
+
+### Step 4: Submit via the Ingest API
+
+Post your Turtle data to the ingest endpoint:
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: text/turtle" \
+  -d '@my-data.ttl' \
+  "https://api.global.church/v0/ingest"
+```
+
+Or with JSON-LD:
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/ld+json" \
+  -d '@my-data.jsonld' \
+  "https://api.global.church/v0/ingest"
+```
+
+---
+
+## SHACL Validation
+
+When you submit data through the ingest API, it is validated against the GC SHACL shapes before being loaded into the graph. This ensures data quality across all contributors.
+
+### What Gets Validated
+
+- **Required fields** -- Every Organization must have a name (`rdfs:label`) and at least one organization type.
+- **Data types** -- URLs must be valid URIs, dates must be valid `xsd:date` or `xsd:dateTime` values.
+- **Cardinality** -- Some properties allow only one value (e.g., `gc:website` has `sh:maxCount 1`).
+- **Value constraints** -- Classification properties must point to valid SKOS concepts.
+
+### What a Validation Error Looks Like
+
+If your data fails validation, the API returns a `422 Unprocessable Entity` response with the SHACL validation report:
+
+```json
+{
+  "error": "SHACL validation failed",
+  "violations": [
+    {
+      "focusNode": "https://data.global.church/org/my-church",
+      "path": "http://www.w3.org/2000/01/rdf-schema#label",
+      "message": "Organization name (required).",
+      "severity": "Violation"
+    }
+  ]
+}
+```
+
+This tells you exactly which node failed, which property is missing or invalid, and what the constraint expects.
+
+---
+
+## Named Graph Assignment
+
+When your data passes validation, it is loaded into a named graph scoped to your organization:
+
+```
+https://data.global.church/{your-org-slug}/
+```
+
+Named graph isolation means:
+- Your data is queryable alongside all other data in the graph.
+- Your data is traceable back to your organization.
+- Updates to your data only affect your named graph.
+- Different organizations can make different assertions about the same entities (e.g., different assessment scores for the same people group), and both are preserved with full provenance.
+
+---
+
+## Current Named Graphs
+
+The knowledge graph currently contains these named graphs:
+
+| Named Graph | Contents |
+|---|---|
+| `<https://data.global.church/joshua-project/>` | 16K+ people groups from Joshua Project |
+| `<https://data.global.church/imb/>` | 12K+ IMB PGIC assessments |
+| `<https://data.global.church/his-registries/>` | HIS SKOS schemes (peoples, languages, religions, geography) |
+| `<https://data.global.church/orgs/>` | 37K+ organizations from Supabase |
+| `<https://data.global.church/engagement-claims/>` | Org engagement claims |
+| `<https://data.global.church/imb/resources/>` | 570 IMB collection resources |
+| `<https://data.global.church/jfilm/resources/>` | 2,485 Jesus Film resource links |
+| `<https://data.global.church/fcbh/resources/>` | 2,004 FCBH Scripture resources |
+
+---
+
+## Getting Started
+
+1. Request an API key from the [developer portal](https://platform.global.church/developer).
+2. Review the [Data Modeling Cookbook](/guides/developers/data-modeling-cookbook) to understand entity structure.
+3. Map your data to GC ontology classes.
+4. Generate Turtle or JSON-LD.
+5. Submit via the ingest API.
+
+For help with data mapping or bridge development, contact paul.martel@global.church.

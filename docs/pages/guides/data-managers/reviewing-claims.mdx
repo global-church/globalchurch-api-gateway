@@ -1,16 +1,128 @@
 ---
 title: Reviewing Claims
-description: How data managers review and approve organization claims and engagement claims on the platform.
+description: How to review organization and engagement claims in the Global.Church admin dashboard.
 ---
 
 # Reviewing Claims
 
-This page will cover:
-- What claims are: organization claims (linking a user to an org) and engagement claims (reporting field activity)
-- The review workflow: submitted → pending review → approved/rejected by admin or support role
-- Using the admin claims dashboard at platform.global.church/admin/claims
-- API routes involved: `GET /v0/admin/claims`, `POST /v0/admin/claims/review`, `GET /v0/engagement-claims`
-- RBAC requirements: which roles (admin, support) can review which claim types
-- Best practices for verifying claim accuracy before approval
+Organizations and their members submit claims through the Global.Church platform. These claims go through a review process before they affect the knowledge graph. This guide covers both types of claims and how to review them.
 
-> Content will be provided by the documentation content authors.
+---
+
+## What is a Claim?
+
+A claim is a statement that needs verification before it becomes official in the system. There are two types:
+
+### Organization Claims
+
+An organization claim is when a user says "I belong to this organization." For example, a user with email alice@wycliffe.org might claim membership in Wycliffe Bible Translators during onboarding.
+
+### Engagement Claims
+
+An engagement claim is when an organization says "We work with this people group." For example, Wycliffe might claim engagement with the Quechua people in Peru. Once approved, this fact is added to the knowledge graph.
+
+---
+
+## Organization Claim Lifecycle
+
+1. **Submitted** -- A user goes through onboarding and selects or creates an organization.
+
+2. **Auto-approval check** -- The system checks whether the user's email domain matches the organization's registered domain. If it matches and no one has claimed the organization before, the claim is auto-approved and the user becomes the organization admin.
+
+3. **Pending Review** -- If the domain does not match, or if the organization already has an admin, the claim is queued for review.
+   - If the org has an existing admin, the claim goes to that admin for approval.
+   - If no admin exists and domains do not match, the claim goes to platform admins.
+
+4. **Reviewed** -- An admin (org admin or platform admin) approves or rejects the claim.
+
+5. **Approved** -- The user is added to the organization with the appropriate role (typically `org_member`, upgradable to `org_contributor` or `org_admin`).
+
+6. **Rejected** -- The claim is archived with a reason. The user is notified.
+
+---
+
+## Engagement Claim Lifecycle
+
+1. **Submitted** -- An organization member submits a claim such as "We work with the Fulani in Nigeria" through the engage dashboard or platform.
+
+2. **Pending Review** -- The claim appears in the admin dashboard at [platform.global.church/admin/claims](https://platform.global.church/admin/claims).
+
+3. **Reviewed** -- An admin with the `claims:review` permission (admin or support role) reviews the claim.
+
+4. **Approved** -- The engagement is transformed into RDF triples and loaded into GraphDB in the engagement claims named graph (`<https://data.global.church/engagement-claims/>`). The fact becomes queryable across all applications.
+
+5. **Rejected** -- The claim is archived with a reason.
+
+---
+
+## Where to Review Claims
+
+Claims are reviewed in the platform admin dashboard:
+
+- **Organization claims**: [platform.global.church/admin/claims](https://platform.global.church/admin/claims)
+- **Engagement claims**: Same location, separate tab or filter
+
+You need the `admin` or `support` platform role to access claim review. The `claims:review` permission is required.
+
+---
+
+## What to Check When Reviewing
+
+### Organization Claims
+
+When a user claims membership in an organization, verify:
+
+- **Email domain match** -- Does the user's email domain match the organization's known domain? An alice@wycliffe.org claiming Wycliffe is more credible than a gmail.com address.
+- **Organization legitimacy** -- Does the organization profile look complete and real? Check the org name, website, and type.
+- **Duplicate claims** -- Has someone else already claimed this organization? If so, the existing org admin should handle the new request.
+
+### Engagement Claims
+
+When an organization claims engagement with a people group, verify:
+
+- **Organization legitimacy** -- Is the claiming organization a real, active entity? Check their profile on the platform.
+- **People group identification** -- Does the ROP3 code match the named people group? Verify the people group name and country are consistent.
+- **Engagement type** -- Is the claimed type of engagement (church planting, Bible translation, etc.) appropriate and plausible for this organization?
+- **Supporting evidence** -- Has the organization provided any supporting context? While not always required, evidence strengthens a claim.
+- **Geographic plausibility** -- Does the organization have a presence or history of work in the claimed region?
+
+---
+
+## Organization Roles After Approval
+
+When an organization claim is approved, the user receives an organization membership role:
+
+| Role | What they can do |
+|---|---|
+| **org_admin** | Full control -- approve members, submit engagement claims, manage org metadata |
+| **org_contributor** | Submit data and engagement claims for org admin review |
+| **org_member** | View organization data (read-only, default for new approvals) |
+
+The first person to claim an organization (with matching email domain) automatically becomes `org_admin`. Subsequent members start as `org_member` and can be upgraded by the org admin.
+
+---
+
+## Platform Roles Required for Review
+
+| Action | Required role | Required permission |
+|---|---|---|
+| Review organization claims | `admin` or `support` | `claims:review` |
+| Review engagement claims | `admin` or `support` | `claims:review` |
+| Manage user roles | `admin` | `roles:assign` |
+| View all users | `admin` or `support` | `users:read` |
+
+---
+
+## What Happens After Approval
+
+**Organization claims:** The user is added to the `org_memberships` table with their assigned role. They can now see and (depending on role) contribute to the organization's data.
+
+**Engagement claims:** The claim is transformed into RDF triples following the engagement pattern (MinistryActivity linked to PeopleGroup via `gc:engagesPeopleGroup`, with the organization as the associated agent). These triples are loaded into the `<https://data.global.church/engagement-claims/>` named graph in GraphDB. The engagement becomes visible in the engage dashboard and queryable through the API.
+
+---
+
+## Next Steps
+
+- [Knowledge Graph Overview](/guides/data-managers/knowledge-graph-overview) -- understand what data is in the graph
+- [Data Quality and SHACL](/guides/data-managers/data-quality-shacl) -- how data is validated
+- [Adding a Country](/guides/data-managers/adding-a-country) -- add a new country to the dashboard map

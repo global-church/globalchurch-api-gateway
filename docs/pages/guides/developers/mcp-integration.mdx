@@ -1,16 +1,131 @@
 ---
 title: MCP Integration
-description: How to connect AI agents to Global.Church data using the Model Context Protocol (MCP) endpoint.
+description: Connect AI assistants to the Global.Church knowledge graph using the Model Context Protocol.
 ---
 
 # MCP Integration
 
-This page will cover:
-- What the MCP endpoint is: `POST /v0/mcp` exposes Global.Church data as tools for AI agents
-- Available MCP tools: `churches_search_v1` for searching the organization directory
-- Authentication: Bearer token or `?apiKey=` query parameter
-- Connecting from Claude Desktop, Cursor, or other MCP-compatible AI clients
-- Example: configuring an MCP client to search for churches by location, denomination, or name
-- Future roadmap: additional MCP tools for SPARQL queries, people group lookups, and resource discovery
+The Global.Church API exposes an MCP (Model Context Protocol) endpoint that lets AI assistants interact with the knowledge graph through tool calls. This means you can ask questions in natural language and get structured data back from the graph's 3.2 million triples.
 
-> Content will be provided by the documentation content authors.
+---
+
+## What is MCP?
+
+Model Context Protocol is an open standard that lets AI assistants discover and call external tools. Instead of writing SPARQL queries by hand, an AI assistant can use MCP tools to search organizations, explore people group data, and query the knowledge graph on your behalf.
+
+---
+
+## Endpoint
+
+```
+https://api.global.church/v0/mcp
+```
+
+Authentication uses the same API key as all other Global.Church endpoints.
+
+---
+
+## Connecting Claude Desktop
+
+Add the following to your Claude Desktop configuration file (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "global-church": {
+      "url": "https://api.global.church/v0/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+On macOS, the config file is at:
+```
+~/Library/Application Support/Claude/claude_desktop_config.json
+```
+
+On Windows:
+```
+%APPDATA%\Claude\claude_desktop_config.json
+```
+
+After saving the config, restart Claude Desktop. You should see the Global.Church tools available in the tools menu.
+
+---
+
+## Available Tools
+
+The MCP server exposes tools for working with the knowledge graph:
+
+- **Search organizations** -- Find organizations by name, country, type, or other criteria.
+- **Query the knowledge graph** -- Execute SPARQL queries against GraphDB and get structured results.
+- **Explore people groups** -- Look up people group data including assessment metrics, classification codes, and engagement status.
+
+The tools handle SPARQL generation and result formatting automatically, so you can interact with the graph using natural language.
+
+---
+
+## Example Conversation
+
+Here is what an interaction looks like once MCP is connected:
+
+**You:** Find all Baptist churches in Texas.
+
+**Claude:** I will search the knowledge graph for Baptist churches in Texas.
+
+*[Calls Global.Church search tool]*
+
+**Results:**
+
+| Name | City | Denomination |
+|---|---|---|
+| First Baptist Church Dallas | Dallas | Baptist |
+| Second Baptist Church Houston | Houston | Baptist |
+| Sagemont Church | Houston | Baptist |
+| ... | ... | ... |
+
+Found 847 Baptist churches in Texas.
+
+---
+
+**You:** Which unreached people groups in India have the lowest percentage of Christians?
+
+**Claude:** Let me query the assessment data for Indian people groups.
+
+*[Calls Global.Church SPARQL tool]*
+
+The query joins people group identity data with Joshua Project assessment results to find the least-reached groups.
+
+---
+
+## Built-In Chat Interface
+
+MCP is also available through the built-in chat interface at [platform.global.church](https://platform.global.church). The platform's MCP chat lets you query the knowledge graph without any local setup -- just sign in and start asking questions.
+
+---
+
+## Getting an API Key
+
+1. Go to [platform.global.church/developer](https://platform.global.church/developer).
+2. Sign in with your Global.Church account.
+3. Create a new API key.
+4. Copy the key and add it to your MCP configuration.
+
+You need the `developer` platform role to create API keys. If you do not have this role, contact an admin.
+
+---
+
+## Rate Limits
+
+MCP requests go through the same API gateway as direct SPARQL queries. The rate limit is 100 requests per minute per API key.
+
+---
+
+## Next Steps
+
+- [SPARQL Quickstart](/guides/developers/sparql-quickstart) -- learn to write queries directly
+- [Data Modeling Cookbook](/guides/developers/data-modeling-cookbook) -- understand how data is structured
+- [Knowledge Graph Overview](/guides/data-managers/knowledge-graph-overview) -- what data is in the graph

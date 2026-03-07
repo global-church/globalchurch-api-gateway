@@ -1,16 +1,267 @@
 ---
 title: Data Modeling Cookbook
-description: Practical recipes for modeling mission data using the GC Ontology patterns.
+description: Worked examples showing how to model Organizations, Engagements, and People Groups in the GC ontology.
 ---
 
 # Data Modeling Cookbook
 
-This page will cover:
-- How to model an Organization with contact, classification, and geographic properties
-- Representing People Group assessments using the 3-block pattern (PeopleGroup + Assessment + AssessmentResult)
-- Linking resources to people groups using `gc:MissionResource` with orthogonal classification dimensions (domain, format, function)
-- Using SKOS concept schemes for standardized vocabularies (religions, languages, denominations)
-- Provenance tracking with PROV-O: who contributed what data and when
-- Common anti-patterns to avoid: flat properties vs. structured assessments, duplicating vs. linking
+This guide shows how the Global.Church ontology models three core entity types. Each example includes Turtle (the native RDF syntax) and JSON-LD (for developers more comfortable with JSON).
 
-> Content will be provided by the documentation content authors.
+The ontology namespace is `https://ontology.global.church/core#` (prefix `gc:`). All domain classes descend from W3C PROV-O types: `prov:Agent`, `prov:Activity`, or `prov:Entity`. Reference data uses SKOS without PROV-O parentage.
+
+---
+
+## How We Model an Organization
+
+A [`gc:Organization`](https://ontology.global.church/core#Organization) is a `prov:Agent` -- an entity that can act, make decisions, and bear responsibility. Organizations include churches, mission agencies, denominations, and networks.
+
+Every organization must have a name and at least one organization type. Other properties (city, state, website, belief classification) are optional.
+
+### Turtle
+
+```turtle
+@prefix gc: <https://ontology.global.church/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://data.global.church/org/example-church>
+  a gc:Organization ;
+  rdfs:label "Example Community Church" ;
+  gc:orgName "Example Community Church" ;
+  gc:hasOrganizationType <https://data.global.church/vocabs/org-type/Church> ;
+  gc:city "Denver" ;
+  gc:state "CO" ;
+  gc:country "US" ;
+  gc:hasBeliefClassification <https://data.global.church/vocabs/belief/Christian> ;
+  gc:hasDenominationClassification <https://data.global.church/vocabs/denomination/Baptist> .
+```
+
+### JSON-LD
+
+```json
+{
+  "@context": {
+    "gc": "https://ontology.global.church/core#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+  },
+  "@id": "https://data.global.church/org/example-church",
+  "@type": "gc:Organization",
+  "rdfs:label": "Example Community Church",
+  "gc:orgName": "Example Community Church",
+  "gc:hasOrganizationType": {
+    "@id": "https://data.global.church/vocabs/org-type/Church"
+  },
+  "gc:city": "Denver",
+  "gc:state": "CO",
+  "gc:country": "US",
+  "gc:hasBeliefClassification": {
+    "@id": "https://data.global.church/vocabs/belief/Christian"
+  },
+  "gc:hasDenominationClassification": {
+    "@id": "https://data.global.church/vocabs/denomination/Baptist"
+  }
+}
+```
+
+### Key Points
+
+- `rdfs:label` is the required display name (enforced by SHACL).
+- `gc:hasOrganizationType` links to a SKOS concept from the OrganizationTypeScheme (Church, MissionAgency, Denomination, Network, etc.).
+- Classification properties (`gc:hasBeliefClassification`, `gc:hasDenominationClassification`) link to SKOS concepts in the production vocabularies graph.
+- Country uses ISO 3166-1 alpha-2 codes (e.g., `"US"`, `"IN"`, `"NG"`).
+
+---
+
+## How We Model an Engagement
+
+An engagement connects an organization to a people group through an activity. This uses the PROV-O participation pattern:
+
+1. A [`gc:MinistryActivity`](https://ontology.global.church/core#MinistryActivity) (`prov:Activity`) represents the engagement work.
+2. The activity links to the people group via [`gc:engagesPeopleGroup`](https://ontology.global.church/core#engagesPeopleGroup).
+3. The organization is connected as the agent through a qualified association.
+
+### Turtle
+
+```turtle
+@prefix gc: <https://ontology.global.church/core#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://data.global.church/activity/wycliffe-quechua-2024>
+  a gc:MinistryActivity ;
+  gc:engagesPeopleGroup <https://data.global.church/jp/pg/110532-PE> ;
+  prov:startedAtTime "2024-01-15"^^xsd:date ;
+  prov:wasAssociatedWith <https://data.global.church/org/wycliffe> ;
+  prov:qualifiedAssociation [
+    a gc:MinistryParticipation ;
+    prov:agent <https://data.global.church/org/wycliffe> ;
+    gc:participationRole gc:StrategyCoordinatorRole ;
+  ] .
+
+<https://data.global.church/org/wycliffe>
+  a gc:Organization ;
+  gc:orgName "Wycliffe Bible Translators" .
+
+<https://data.global.church/jp/pg/110532-PE>
+  a gc:PeopleGroup ;
+  gc:peopleName "Quechua, Cusco" ;
+  gc:country "PE" .
+```
+
+### JSON-LD
+
+```json
+{
+  "@context": {
+    "gc": "https://ontology.global.church/core#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@id": "https://data.global.church/activity/wycliffe-quechua-2024",
+  "@type": "gc:MinistryActivity",
+  "gc:engagesPeopleGroup": {
+    "@id": "https://data.global.church/jp/pg/110532-PE"
+  },
+  "prov:startedAtTime": {
+    "@value": "2024-01-15",
+    "@type": "xsd:date"
+  },
+  "prov:wasAssociatedWith": {
+    "@id": "https://data.global.church/org/wycliffe"
+  },
+  "prov:qualifiedAssociation": {
+    "@type": "gc:MinistryParticipation",
+    "prov:agent": { "@id": "https://data.global.church/org/wycliffe" },
+    "gc:participationRole": { "@id": "gc:StrategyCoordinatorRole" }
+  }
+}
+```
+
+### Key Points
+
+- The engagement is modeled as an *activity*, not a property on the organization. This lets you attach provenance (who recorded it, when, based on what evidence).
+- `prov:qualifiedAssociation` is the PROV-O pattern for attaching a role to a participation. The same person or organization can play different roles in different activities.
+- Activity roles (FieldWorker, Leader, Trainer, ChurchPlanter, etc.) describe a function performed -- they are data, not permissions.
+
+---
+
+## How We Model a People Group
+
+A [`gc:PeopleGroup`](https://ontology.global.church/core#PeopleGroup) represents a people-group-in-country (PGIC). Identity properties live directly on the people group. Assessment data uses the 3-block pattern: PeopleGroup + [`gc:Assessment`](https://ontology.global.church/core#Assessment) + [`gc:AssessmentResult`](https://ontology.global.church/core#AssessmentResult).
+
+### Turtle
+
+```turtle
+@prefix gc: <https://ontology.global.church/core#> .
+@prefix jp: <https://ontology.global.church/joshuaproject#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Block 1: People Group (identity and classification)
+<https://data.global.church/jp/pg/110532-IN>
+  a gc:PeopleGroup ;
+  gc:peopleName "Shaikh" ;
+  gc:country "IN" ;
+  jp:population 172572000 ;
+  jp:continent "Asia" ;
+  jp:affinityBloc "South Asian Peoples" ;
+  jp:peopleCluster "Shaikh" ;
+  gc:hasPeopleClassification <https://data.global.church/his/rop3/110532> ;
+  gc:hasLanguageClassification <https://data.global.church/his/rol/urd> ;
+  gc:hasReligionClassification <https://data.global.church/his/ror/M> ;
+  gc:hasGeographyClassification <https://data.global.church/his/rog/IN> ;
+  owl:sameAs <https://joshuaproject.net/people_groups/110532/IN> .
+
+# Block 2: Assessment (provenance — who assessed, when)
+<https://data.global.church/jp/assessment/110532-IN>
+  a gc:Assessment ;
+  gc:assessedPeopleGroup <https://data.global.church/jp/pg/110532-IN> ;
+  prov:wasAssociatedWith <https://data.global.church/org/joshua-project> ;
+  prov:generatedAtTime "2026-01-15T00:00:00Z"^^xsd:dateTime .
+
+# Block 3: Assessment Result (metric values)
+<https://data.global.church/jp/result/110532-IN>
+  a gc:AssessmentResult ;
+  gc:resultForPeopleGroup <https://data.global.church/jp/pg/110532-IN> ;
+  prov:wasGeneratedBy <https://data.global.church/jp/assessment/110532-IN> ;
+  jp:jpScale 1 ;
+  jp:percentChristian 0.0 ;
+  jp:leastReached true ;
+  jp:frontier true ;
+  jp:primaryReligion "Islam" .
+```
+
+### JSON-LD
+
+```json
+[
+  {
+    "@context": {
+      "gc": "https://ontology.global.church/core#",
+      "jp": "https://ontology.global.church/joshuaproject#",
+      "prov": "http://www.w3.org/ns/prov#",
+      "owl": "http://www.w3.org/2002/07/owl#",
+      "xsd": "http://www.w3.org/2001/XMLSchema#"
+    },
+    "@id": "https://data.global.church/jp/pg/110532-IN",
+    "@type": "gc:PeopleGroup",
+    "gc:peopleName": "Shaikh",
+    "gc:country": "IN",
+    "jp:population": 172572000,
+    "jp:continent": "Asia",
+    "gc:hasPeopleClassification": {
+      "@id": "https://data.global.church/his/rop3/110532"
+    },
+    "gc:hasLanguageClassification": {
+      "@id": "https://data.global.church/his/rol/urd"
+    },
+    "gc:hasReligionClassification": {
+      "@id": "https://data.global.church/his/ror/M"
+    },
+    "owl:sameAs": {
+      "@id": "https://joshuaproject.net/people_groups/110532/IN"
+    }
+  },
+  {
+    "@id": "https://data.global.church/jp/result/110532-IN",
+    "@type": "gc:AssessmentResult",
+    "gc:resultForPeopleGroup": {
+      "@id": "https://data.global.church/jp/pg/110532-IN"
+    },
+    "jp:jpScale": 1,
+    "jp:percentChristian": 0.0,
+    "jp:leastReached": true,
+    "jp:frontier": true
+  }
+]
+```
+
+### Key Points
+
+- **Identity vs. assessment separation.** Descriptive properties (name, population, continent, language) live on the PeopleGroup. Assessment metrics (JP Scale, percent Christian, least reached) live on the AssessmentResult. This separation exists because different organizations can assess the same people group differently.
+- **HIS classification links.** Four classification properties connect the people group to HIS registry SKOS concepts: `gc:hasPeopleClassification` (ROP3), `gc:hasLanguageClassification` (ROL), `gc:hasReligionClassification` (ROR), `gc:hasGeographyClassification` (ROG). These serve as the cross-dataset join keys.
+- **3-block pattern.** Both Joshua Project and IMB data follow this same structure. To query assessment data, always join through `gc:resultForPeopleGroup` -- never expect assessment metrics directly on the PeopleGroup.
+- **`owl:sameAs`** links GC people group URIs to their source system URIs for cross-reference.
+
+---
+
+## URI Patterns
+
+The knowledge graph uses consistent URI patterns for all entities:
+
+| Entity Type | URI Pattern | Example |
+|---|---|---|
+| Organization | `https://data.global.church/org/{slug}` | `.../org/wycliffe` |
+| JP People Group | `https://data.global.church/jp/pg/{ROP3}-{ROG3}` | `.../jp/pg/110532-IN` |
+| JP Assessment | `https://data.global.church/jp/assessment/{ROP3}-{ROG3}` | `.../jp/assessment/110532-IN` |
+| JP Result | `https://data.global.church/jp/result/{ROP3}-{ROG3}` | `.../jp/result/110532-IN` |
+| ROP3 People | `https://data.global.church/his/rop3/{code}` | `.../his/rop3/110532` |
+| ROL Language | `https://data.global.church/his/rol/{iso639-3}` | `.../his/rol/urd` |
+| ROR Religion | `https://data.global.church/his/ror/{code}` | `.../his/ror/M` |
+| ROG Geography | `https://data.global.church/his/rog/{code}` | `.../his/rog/IN` |
+
+## Next Steps
+
+- [SPARQL Quickstart](/guides/developers/sparql-quickstart) -- query the data you now understand
+- [Contributing Linked Data](/guides/developers/contributing-linked-data) -- submit your own data to the graph
+- [Data Quality and SHACL](/guides/data-managers/data-quality-shacl) -- understand validation rules

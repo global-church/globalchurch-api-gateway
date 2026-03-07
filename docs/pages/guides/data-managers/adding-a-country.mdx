@@ -1,16 +1,177 @@
 ---
 title: Adding a Country
-description: The complete workflow for onboarding a new country into the Global.Church engagement dashboard.
+description: How to add a new country to the engage dashboard map using the hex pipeline.
 ---
 
 # Adding a Country
 
-This page will cover:
-- What "adding a country" means: running the hex pipeline to generate H3 hex cells with population and people group data
-- Prerequisites: WorldPop raster data availability, ISO country codes, center coordinates
-- The pipeline steps: WorldPop download, H3 hex cell generation, people group classification, dashboard registration
-- Using the `gc-add-country` skill or running `add_country.sh` directly
-- Verifying the result: checking that the engagement dashboard renders the new country correctly
-- Post-pipeline steps: committing generated data, deploying the updated dashboard
+The engage dashboard map displays population data as hexagonal cells. Each hex cell represents approximately 5.16 square kilometers and carries population and people group data. This guide walks through adding a new country to the map.
 
-> Content will be provided by the documentation content authors.
+---
+
+## What the Hex Pipeline Does
+
+The hex pipeline converts population raster data (satellite-derived population estimates) into H3 hexagonal grid cells, classifies each hex by its majority people group, and loads the results into the Supabase database that powers the engage dashboard map.
+
+The pipeline uses two data sources:
+- **WorldPop** (University of Southampton) -- population raster images at 100m or 1km resolution
+- **aPG people group polygons** -- geographic boundaries of people groups, used to classify hexes by majority people group (with ROP3 and ROL codes)
+
+---
+
+## Prerequisites
+
+- Python 3.8+ with pip
+- Access to the Supabase database (either direct PostgreSQL connection or Supabase Management API credentials)
+- The `gc-hex-pipeline` package (located at `core/packages/gc-hex-pipeline/`)
+
+Install Python dependencies:
+
+```bash
+cd core/packages/gc-hex-pipeline
+pip install -r requirements.txt
+```
+
+---
+
+## The One-Liner Command
+
+One command handles the entire pipeline:
+
+```bash
+# Set credentials (choose one option)
+export DATABASE_URL="postgresql://..."          # Option A: direct DB
+export SUPABASE_ACCESS_TOKEN="sbp_..."          # Option B: Supabase API
+export SUPABASE_PROJECT_REF="ncjyccrlbjwnmfjvoily"
+
+# Add a country: ./add_country.sh <ISO2> <ISO3> <NAME> <LNG> <LAT> [ZOOM]
+./add_country.sh PK PAK Pakistan 69.3 30.4
+./add_country.sh IN IND India 78.9 20.6 5
+./add_country.sh NG NGA Nigeria 8.7 9.1 6
+```
+
+Arguments:
+- **ISO2** -- Two-letter country code (e.g., `PK`)
+- **ISO3** -- Three-letter country code (e.g., `PAK`)
+- **NAME** -- Country name (e.g., `Pakistan`)
+- **LNG** -- Center longitude for the default map view
+- **LAT** -- Center latitude for the default map view
+- **ZOOM** (optional) -- Default zoom level for the map view
+
+---
+
+## What Happens Under the Hood
+
+The script runs six steps:
+
+### Step 1: Download WorldPop Raster
+
+Downloads population raster data from WorldPop. The script tries three sources in order:
+1. 2025 data at 100m resolution (most detailed)
+2. 2025 data at 1km resolution
+3. 2020 data at 1km resolution (fallback)
+
+### Step 2: Process into H3 Hex Cells
+
+Reads the raster file, samples population values at H3 resolution 7 (approximately 5.16 km per cell), and loads the hex cells into the `hex_population_groups` table in Supabase.
+
+### Step 3: Download People Group Polygons
+
+Downloads the aPG people group polygon dataset if not already cached. This is a one-time download of approximately 50 MB that is shared across all countries.
+
+### Step 4: Classify Hexes by People Group
+
+Performs a spatial join between hex cell centroids and people group polygons. Each hex is assigned the ROP3 code and ROL (language) code of its majority people group.
+
+### Step 5: Register in Dashboard
+
+Adds the country to the dashboard's `COUNTRIES` array in `hexApi.ts`, which controls which countries appear in the engage dashboard map selector.
+
+### Step 6: Summary Statistics
+
+Prints a summary showing the number of hex cells created, total population covered, and what percentage of hexes were successfully classified by people group.
+
+---
+
+## Connection Options
+
+### Option A: Direct PostgreSQL (fastest for large datasets)
+
+```bash
+export DATABASE_URL="postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres"
+```
+
+### Option B: Supabase Management API (no database password needed)
+
+```bash
+export SUPABASE_ACCESS_TOKEN="sbp_..."
+export SUPABASE_PROJECT_REF="ncjyccrlbjwnmfjvoily"
+```
+
+---
+
+## How to Verify
+
+After running the pipeline:
+
+1. **Build the dashboard** to confirm nothing is broken:
+   ```bash
+   cd ../../apps/engage && npm run build
+   ```
+
+2. **Check the map** -- Run the dashboard locally or deploy to preview. The new country should appear in the country selector and display hex cells on the map.
+
+3. **Review the stats** -- The pipeline prints classification percentage. A typical country should have 80%+ of hexes classified by people group. Lower numbers may indicate missing people group polygon coverage for that region.
+
+---
+
+## After Running
+
+Commit the changes and deploy:
+
+```bash
+cd ../../apps/engage
+git add -A
+git commit -m "Add Pakistan (PK) to hex pipeline"
+git push   # triggers Vercel deploy
+```
+
+---
+
+## Processing Options
+
+For advanced usage, the underlying Python script accepts additional options:
+
+| Option | Default | Description |
+|---|---|---|
+| `--resolution N` | 7 | H3 resolution (7 is approximately 5.16 km per cell) |
+| `--batch-size N` | 500 (API) / 5000 (direct) | Database insert batch size |
+| `--source TAG` | `worldpop-2025` | Data source tag for provenance |
+| `--use-api` | auto-detected | Use Supabase Management API instead of direct DB |
+
+---
+
+## Troubleshooting
+
+**WorldPop download fails.** The script automatically falls back to lower resolution or older data. If all three sources fail, check your internet connection and try again. WorldPop occasionally has server downtime.
+
+**Low classification percentage.** If many hexes are unclassified (below 70%), the aPG polygon dataset may not have coverage for that country's people groups. This does not prevent the country from appearing on the map -- unclassified hexes still show population data, just without people group attribution.
+
+**Database connection errors.** Verify your `DATABASE_URL` or Supabase credentials. For direct connections, ensure the connection string includes the pooler endpoint (port 6543), not the direct database port.
+
+**Dashboard build fails after adding country.** Check that the `COUNTRIES` array in `hexApi.ts` was updated correctly. The entry needs valid ISO2, ISO3 codes and center coordinates.
+
+---
+
+## Data Sources
+
+- **WorldPop** (University of Southampton) -- CC-BY 4.0 population rasters
+- **H3** (Uber) -- Apache 2.0 hexagonal grid system
+- **aPG** -- People group geographic polygons
+
+---
+
+## Next Steps
+
+- [Knowledge Graph Overview](/guides/data-managers/knowledge-graph-overview) -- understand the broader data ecosystem
+- [Reviewing Claims](/guides/data-managers/reviewing-claims) -- review engagement claims for the new country
