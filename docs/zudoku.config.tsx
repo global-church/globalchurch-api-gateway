@@ -19,56 +19,62 @@ const config: ZudokuConfig = {
     title: "Global.Church Developer Portal",
     description: "Global.Church API documentation and developer playground site",
   },
-  navigation: [
-/*
-    {
-      type: "category",
-      label: "Documentation",
-      items: [
-        {
-          type: "category",
-          label: "Getting Started",
-          icon: "sparkles",
-          items: [
-            {
-              type: "doc",
-              file: "introduction",
-            },
-            {
-              type: "doc",
-              file: "markdown",
-            },
-          ],
-        },
-        {
-          type: "category",
-          label: "Useful Links",
-          collapsible: false,
-          icon: "link",
-          items: [
-            {
-              type: "link",
-              label: "Zuplo Docs",
-              to: "https://zuplo.com/docs/dev-portal/introduction",
-            },
-            {
-              type: "link",
-              label: "Developer Portal Docs",
-              to: "https://zuplo.com/docs/dev-portal/introduction",
-            },
-          ],
-        },
-      ],
-    },
-*/
-
-    {
-      type: "link",
-      to: "/api",
-      label: "Global.Church API Reference",
-    },
+  topNavigation: [
+    { id: "docs", label: "Documentation" },
+    { id: "api", label: "API Reference" },
   ],
-  redirects: [{ from: "/", to: "/api" }],
+  sidebar: {
+    docs: [
+      {
+        type: "category",
+        label: "Getting Started",
+        icon: "sparkles",
+        items: [
+          { type: "doc", id: "guides/what-is-global-church" },
+          { type: "doc", id: "guides/key-concepts" },
+          { type: "doc", id: "guides/get-an-api-key" },
+        ],
+      },
+      {
+        type: "category",
+        label: "For App Developers",
+        icon: "code",
+        items: [
+          { type: "link", label: "API Reference", href: "/api" },
+          { type: "doc", id: "guides/developers/sparql-quickstart" },
+          { type: "doc", id: "guides/developers/data-modeling-cookbook" },
+          { type: "doc", id: "guides/developers/contributing-linked-data" },
+          { type: "doc", id: "guides/developers/mcp-integration" },
+        ],
+      },
+      {
+        type: "category",
+        label: "For Data Managers",
+        icon: "database",
+        items: [
+          { type: "doc", id: "guides/data-managers/knowledge-graph-overview" },
+          { type: "doc", id: "guides/data-managers/data-quality-shacl" },
+          { type: "doc", id: "guides/data-managers/reviewing-claims" },
+          { type: "doc", id: "guides/data-managers/adding-a-country" },
+        ],
+      },
+      {
+        type: "category",
+        label: "Reference",
+        icon: "book-open",
+        items: [
+          { type: "link", label: "Ontology Reference", href: "https://ontology.global.church" },
+          { type: "link", label: "SKOS Vocabularies", href: "https://ontology.global.church/vocabs" },
+          { type: "doc", id: "guides/reference/named-graph-conventions" },
+          { type: "doc", id: "guides/reference/uri-patterns" },
+          { type: "doc", id: "guides/reference/his-registries" },
+        ],
+      },
+    ],
+  },
+  docs: {
+    files: "/pages/**/*.mdx",
+  },
   apis: [
     {
       type: "file",
@@ -76,18 +82,13 @@ const config: ZudokuConfig = {
       path: "api",
     },
   ],
-  authentication: {
-    // IMPORTANT: This is a demo Auth0 configuration.
-    // In a real application, you should replace these values with your own
-    // identity provider's configuration.
-    // This configuration WILL NOT WORK with custom domains.
-    // For more information, see:
-    // https://zuplo.com/docs/dev-portal/zudoku/configuration/authentication
-    type: "auth0",
-    domain: "auth.zuplo.site",
-    clientId: "f8I87rdsCRo4nU2FHf0fHVwA9P7xi7Ml",
-    audience: "https://api.example.com/",
-  },
+  // TODO: Configure Privy authentication
+  // authentication: {
+  //   type: "auth0",
+  //   domain: "auth.zuplo.site",
+  //   clientId: "f8I87rdsCRo4nU2FHf0fHVwA9P7xi7Ml",
+  //   audience: "https://api.example.com/",
+  // },
   apiKeys: {
     enabled: true,
   },
