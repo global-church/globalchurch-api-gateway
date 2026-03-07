@@ -15,6 +15,7 @@
 The Zuplo API gateway that sits in front of both GraphDB (knowledge graph) and Supabase (church directory). Handles authentication, rate limiting, CORS, and request routing. Also exposes an MCP server endpoint for AI agent integration.
 
 Deployed at: **api.global.church** (custom domain, migrated from `global-church-main-ba4d06e.zuplo.app`)
+Developer Portal at: **docs.global.church** (Zudoku, served by Zuplo Dev Portal service)
 
 ## Routes
 
@@ -68,6 +69,10 @@ Exposes `churches_search_v1` tool. Auth via Bearer token or `?apiKey=` query par
 - **custom-cors** — Shared CORS policy for all GC-Core routes
 - **log-incoming-headers-mcp** — Request/response logging
 - **mcp-query-param-to-header-inbound** — Query param to header conversion for MCP auth
+
+## Developer Portal (docs.global.church)
+
+Zudoku-powered documentation site with API reference + narrative guides. Configured in `docs/zudoku.config.tsx`. 14 MDX guide pages in `docs/pages/guides/`. Sidebar has 4 categories: Getting Started, For App Developers, For Data Managers, Reference. API Reference auto-generated from `config/routes.oas.json`.
 
 ## Key Config Files
 
