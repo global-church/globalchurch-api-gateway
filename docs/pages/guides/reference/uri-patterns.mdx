@@ -1,16 +1,83 @@
 ---
 title: URI Patterns
-description: Standard URI patterns used across the Global.Church knowledge graph for people groups, assessments, organizations, and registries.
+description: How entities are identified in the Global.Church knowledge graph.
 ---
 
 # URI Patterns
 
-This page will cover:
-- Ontology namespace: `https://ontology.global.church/core#` (prefix `gc:`), plus `jp:` and `imb:` for source-specific concepts
-- Data instance URIs: `https://data.global.church/{source}/{type}/{id}` pattern
-- People group URIs: keyed by ROP3 code (e.g., `data.global.church/rop/{ROP3}`)
-- Assessment and result URIs: `data.global.church/jp/assessment/{ROP3}-{ROG3}`, `data.global.church/imb/result/{ROP3}-{ROG}`
-- HIS Registry URIs: ROL (`data.global.church/his/rol/{iso639-3}`), ROR (`data.global.church/his/ror/{code}`), ROG (`data.global.church/his/rog/{code}`)
-- Organization URIs: `data.global.church/org/{slug}`
+Every entity in the Global.Church knowledge graph is identified by a stable URI. This page documents the URI patterns for each entity type.
 
-> Content will be provided by the documentation content authors.
+## Base Domain
+
+All data URIs use the base domain `https://data.global.church/`.
+
+Ontology URIs (class and property definitions) use `https://ontology.global.church/`.
+
+## Entity URI Patterns
+
+### People Groups (HIS ROP3)
+
+People groups are identified by their ROP3 code — a 6-digit perpetual code from the HIS Registry of Peoples.
+
+| Pattern | Example |
+|---|---|
+| `https://data.global.church/his/rop3/{code}` | `https://data.global.church/his/rop3/110532` |
+
+### Organizations
+
+Organizations materialized from Supabase use UUIDs.
+
+| Pattern | Example |
+|---|---|
+| `https://data.global.church/org/{uuid-or-slug}` | `https://data.global.church/org/joshua-project` |
+
+Well-known organizations like Joshua Project and IMB use human-readable slugs:
+
+- `https://data.global.church/org/joshua-project`
+- `https://data.global.church/org/imb`
+
+### Assessments and Results
+
+Assessments follow a 3-block pattern: a PeopleGroup, an Assessment (the act of evaluating), and an AssessmentResult (the measured values). Both JP and IMB use composite keys of ROP3 + country code.
+
+**Joshua Project:**
+
+| Entity | Pattern | Example |
+|---|---|---|
+| Assessment | `https://data.global.church/jp/assessment/{ROP3}-{ROG3}` | `.../jp/assessment/110532-IN` |
+| Result | `https://data.global.church/jp/result/{ROP3}-{ROG3}` | `.../jp/result/110532-IN` |
+
+**IMB:**
+
+| Entity | Pattern | Example |
+|---|---|---|
+| Assessment | `https://data.global.church/imb/assessment/{ROP3}-{ROG}` | `.../imb/assessment/110532-IN` |
+| Result | `https://data.global.church/imb/result/{ROP3}-{ROG}` | `.../imb/result/110532-IN` |
+
+The composite key `{ROP3}-{ROG}` represents a People Group in Country (PGIC) — a specific people group within a specific country.
+
+### HIS Registry Codes
+
+The four HIS registries each have their own URI pattern under `https://data.global.church/his/`:
+
+| Registry | Pattern | Example |
+|---|---|---|
+| ROP (Peoples) | `https://data.global.church/his/rop3/{code}` | `.../his/rop3/110532` |
+| ROL (Languages) | `https://data.global.church/his/rol/{iso639-3}` | `.../his/rol/hin` (Hindi) |
+| ROR (Religions) | `https://data.global.church/his/ror/{code}` | `.../his/ror/M` (Islam) |
+| ROG (Geography) | `https://data.global.church/his/rog/{code}` | `.../his/rog/IN` (India) |
+
+ROG codes also include hierarchical concepts for regions and subregions:
+
+- `https://data.global.church/his/rog/region-asia`
+- `https://data.global.church/his/rog/subregion-southern-asia`
+
+## Why URI Stability Matters
+
+Stable URIs are a core principle of linked data. When a URI identifies an entity, other systems can link to it with confidence that the link won't break. This is what makes cross-organization data integration possible:
+
+- Both JP and IMB assessments link to the **same** ROP3 people group URI, so you can join their data without any custom mapping logic.
+- HIS registry URIs serve as shared reference points that any organization can link to.
+- Organization URIs provide a stable identity even as the underlying data changes.
+
+If you're building an integration, use these URI patterns to construct identifiers programmatically. For example, to build the JP assessment URI for people group 110532 in India: `https://data.global.church/jp/assessment/110532-IN`.

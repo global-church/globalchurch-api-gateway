@@ -1,15 +1,79 @@
 ---
 title: Get an API Key
-description: How to register for a Global.Church developer account and obtain an API key.
+description: Step-by-step guide to creating a Global.Church API key and making your first request.
 ---
 
 # Get an API Key
 
-This page will cover:
-- Creating an account on platform.global.church and completing the onboarding flow
-- Requesting developer access (the `developer` role) from the developer portal
-- Generating and managing API keys from your developer dashboard
-- How authentication works: Bearer token and `?apiKey=` query parameter options
-- Rate limits: 200 requests/minute per API key, and how to monitor your usage
+Follow these steps to get programmatic access to the Global.Church API.
 
-> Content will be provided by the documentation content authors.
+## Step 1: Create an Account
+
+Go to [platform.global.church](https://platform.global.church) and sign in with Google or email. If you don't have an account, one will be created automatically during sign-in.
+
+## Step 2: Request Developer Access
+
+Navigate to the **Developer** section in the platform. You'll need the `developer` role to create API keys. If you don't have it yet, request it from the Developer page — an admin will review and approve your request.
+
+## Step 3: Generate an API Key
+
+Once you have the `developer` role:
+
+1. Go to **Developer** in the platform navigation.
+2. Click **API Keys**.
+3. Click **Create New Key**.
+4. Give your key a descriptive name (e.g., "My App - Development").
+5. Copy and securely store the key — it won't be shown again.
+
+## Step 4: Make Your First Request
+
+Try a simple REST request to search for organizations:
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  "https://api.global.church/v0/orgs/search?country=US&limit=5"
+```
+
+You should get back a JSON response with up to 5 organizations in the United States.
+
+## Step 5: Try SPARQL
+
+The API also supports SPARQL queries against the knowledge graph. Here's a simple count of all triples:
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/sparql-query" \
+  -d "SELECT (COUNT(*) AS ?count) WHERE { ?s ?p ?o }" \
+  "https://api.global.church/v0/sparql"
+```
+
+And a more useful query — find the 5 largest unreached people groups:
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/sparql-query" \
+  -d "PREFIX gc: <https://ontology.global.church/core#>
+PREFIX jp: <https://ontology.global.church/joshuaproject#>
+SELECT ?name ?population WHERE {
+  ?pg a gc:PeopleGroup ;
+      gc:name ?name ;
+      jp:population ?population .
+  ?result a gc:AssessmentResult ;
+      gc:resultForPeopleGroup ?pg ;
+      jp:leastReached true .
+} ORDER BY DESC(?population) LIMIT 5" \
+  "https://api.global.church/v0/sparql"
+```
+
+## Rate Limits
+
+Standard rate limits apply to all API keys. If you need higher limits for production use, contact [support](mailto:paul.martel@global.church).
+
+## Next Steps
+
+- **SPARQL Quickstart** — Learn to write more powerful queries against the knowledge graph.
+- **API Reference** — Full documentation of all REST endpoints under `/v0/`.
+- [Named Graph Conventions](/docs/guides/reference/named-graph-conventions) — Understand how data is organized in the knowledge graph.
+- [HIS Registries](/docs/guides/reference/his-registries) — Learn about the standard code systems for peoples, languages, religions, and geography.

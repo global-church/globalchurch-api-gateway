@@ -1,16 +1,105 @@
 ---
 title: HIS Registries
-description: The four HIS Registry standards (ROP, ROL, ROR, ROG) that provide shared codes for peoples, languages, religions, and geography.
+description: Standardized code systems for peoples, languages, religions, and geography used across Global.Church.
 ---
 
 # HIS Registries
 
-This page will cover:
-- What HIS Registries are: shared code systems maintained by hisregistries.org for interoperability across mission organizations
-- **ROP (Registry of Peoples)** — ROP3 is the 6-digit perpetual people group code used as the primary key across the missions data ecosystem
-- **ROL (Registry of Languages)** — based on ISO 639-3; 7,083 language concepts in the knowledge graph
-- **ROR (Registry of Religions)** — 46 religion concepts in a 2-level SKOS hierarchy (e.g., `ror:M` for Islam, `ror:CRC` for Roman Catholic)
-- **ROG (Registry of Geography)** — 269 concepts: 5 regions, 22 subregions, 242 countries in a 3-level hierarchy
-- How these registries are represented as SKOS ConceptSchemes in the `his-registries` named graph (~172K triples)
+The Global.Church knowledge graph uses standardized code systems from [hisregistries.org](https://hisregistries.org) — the Harvest Information System maintained by the missions data community. These registries provide shared identifiers that let different organizations refer to the same people groups, languages, religions, and geographies unambiguously.
 
-> Content will be provided by the documentation content authors.
+All four HIS registries are loaded into the knowledge graph as SKOS concept schemes in the named graph `<https://data.global.church/his-registries/>`, totaling approximately 172,000 triples.
+
+## ROP — Registry of Peoples
+
+The Registry of Peoples assigns a **ROP3 code** — a 6-digit perpetual identifier — to each people group worldwide. ROP3 is the primary key for people groups across the missions data ecosystem, used by Joshua Project, IMB, and Global.Church alike.
+
+| Detail | Value |
+|---|---|
+| URI pattern | `https://data.global.church/his/rop3/{code}` |
+| Example | `https://data.global.church/his/rop3/110532` |
+| Ontology link | `gc:hasPeopleClassification` connects a PeopleGroup to its ROP3 concept |
+
+ROP3 codes are **perpetual** — once assigned to a people group, the code never changes, even if the group's name or classification is updated. This makes them reliable join keys across datasets.
+
+## ROG — Registry of Geography
+
+Country and region codes organized in a 3-level hierarchy: Region, Subregion, and Country.
+
+| Detail | Value |
+|---|---|
+| URI pattern | `https://data.global.church/his/rog/{code}` |
+| Country example | `https://data.global.church/his/rog/IN` (India) |
+| Region example | `https://data.global.church/his/rog/region-asia` |
+| Subregion example | `https://data.global.church/his/rog/subregion-southern-asia` |
+| Ontology link | `gc:hasGeographyClassification` connects entities to ROG concepts |
+| Concept count | 269 (5 regions + 22 subregions + 242 countries) |
+
+## ROL — Registry of Languages
+
+Language codes based on ISO 639-3, covering 7,083 languages.
+
+| Detail | Value |
+|---|---|
+| URI pattern | `https://data.global.church/his/rol/{iso639-3}` |
+| Example | `https://data.global.church/his/rol/hin` (Hindi) |
+| Ontology links | `gc:hasLanguageClassification`, `gc:resourceLanguage`, `gc:inLanguage` |
+| Concept count | 7,083 |
+
+## ROR — Registry of Religions
+
+Religion classification codes organized in a 2-level hierarchy.
+
+| Detail | Value |
+|---|---|
+| URI pattern | `https://data.global.church/his/ror/{code}` |
+| Example | `https://data.global.church/his/ror/M` (Islam) |
+| Other examples | `ror:BTH` (Buddhism - Theravada), `ror:CRC` (Christianity - Roman Catholic) |
+| Ontology link | `gc:hasReligionClassification` connects entities to ROR concepts |
+| Concept count | 46 |
+
+## How HIS Codes Connect to the Ontology
+
+Each HIS registry is linked to the knowledge graph through a dedicated classification property:
+
+| Registry | Property | Domain | Range |
+|---|---|---|---|
+| ROP | `gc:hasPeopleClassification` | PeopleGroup | ROP3 SKOS Concept |
+| ROG | `gc:hasGeographyClassification` | various | ROG SKOS Concept |
+| ROL | `gc:hasLanguageClassification` | PeopleGroup | ROL SKOS Concept |
+| ROR | `gc:hasReligionClassification` | PeopleGroup | ROR SKOS Concept |
+
+These properties point to SKOS concepts, so you can use standard SKOS relationships (`skos:broader`, `skos:narrower`, `skos:notation`) to navigate the hierarchy and access raw codes.
+
+### Example: Find all people groups classified under Islam
+
+```sparql
+PREFIX gc: <https://ontology.global.church/core#>
+PREFIX ror: <https://data.global.church/his/ror/>
+
+SELECT ?pg ?name WHERE {
+  ?pg a gc:PeopleGroup ;
+      gc:name ?name ;
+      gc:hasReligionClassification ror:M .
+}
+LIMIT 10
+```
+
+### Accessing raw codes
+
+Each SKOS concept carries its raw code as a `skos:notation` value:
+
+```sparql
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?concept ?label ?code WHERE {
+  ?concept a skos:Concept ;
+           skos:prefLabel ?label ;
+           skos:notation ?code ;
+           skos:inScheme <https://data.global.church/his/rog/scheme> .
+}
+LIMIT 10
+```
+
+## Sync Cadence
+
+HIS registry data is synced quarterly from hisregistries.org. The bridge process clears and reloads the `<https://data.global.church/his-registries/>` named graph each cycle.

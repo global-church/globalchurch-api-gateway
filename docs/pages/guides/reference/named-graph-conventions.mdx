@@ -1,16 +1,86 @@
 ---
 title: Named Graph Conventions
-description: How Global.Church uses named graphs to isolate and govern data from different sources in GraphDB.
+description: How data is organized into named graphs in the Global.Church knowledge graph.
 ---
 
 # Named Graph Conventions
 
-This page will cover:
-- The named graph model: each data source lives in its own named graph for isolation and provenance
-- Standard graph URIs: `https://data.global.church/joshua-project/`, `https://data.global.church/imb/`, `https://data.global.church/his-registries/`, and others
-- The default graph: where the GC Ontology itself is stored
-- Production vocabularies graph: `https://data.global.church/vocabs/` for OrganizationType, BeliefType, Denomination schemes
-- Resource graphs: `https://data.global.church/imb/resources/`, `https://data.global.church/jfilm/resources/`, `https://data.global.church/fcbh/resources/`
-- How to scope SPARQL queries to specific graphs using `GRAPH` clauses
+The Global.Church knowledge graph uses **named graphs** to isolate data by source. Each data provider's triples live in a dedicated graph, preserving provenance and enabling source-specific queries.
 
-> Content will be provided by the documentation content authors.
+## Graph Directory
+
+| Named Graph | Contents | Approx. Triples |
+|---|---|---|
+| *(default graph)* | GC OWL ontology (class definitions, property definitions) | ~1,400 |
+| `<https://data.global.church/vocabs/>` | Production SKOS vocabularies (OrganizationType, BeliefType, Denomination) | -- |
+| `<https://data.global.church/joshua-project/>` | JP people group data (16K+ PGICs, 3-block assessment pattern) | ~636K |
+| `<https://data.global.church/imb/>` | IMB PGIC assessments (GSEC, SPI, engagement status) + 4 SKOS vocab schemes | ~408K |
+| `<https://data.global.church/imb/resources/>` | 570 media/training/evangelism resources from IMB Collections API | ~10.9K |
+| `<https://data.global.church/his-registries/>` | HIS SKOS schemes: ROP (peoples), ROL (7,083 languages), ROR (religions), ROG (geography) | ~172K |
+| `<https://data.global.church/orgs/>` | 37K+ organizations materialized from Supabase via Org Bridge | ~1.78M |
+| `<https://data.global.church/engagement-claims/>` | Self-reported org engagement claims materialized via Engagement Bridge | -- |
+| `<https://data.global.church/jfilm/resources/>` | 2,485 Jesus Film / Magdalena / Savior resource links | -- |
+| `<https://data.global.church/fcbh/resources/>` | 2,004 FCBH Scripture resources (live.bible.is edition-specific URLs) | -- |
+
+**Total:** ~3.2M explicit triples in GraphDB.
+
+## The Isolation Model
+
+Each external data source gets its own named graph. This design serves three purposes:
+
+1. **Provenance** — You always know where a fact came from. A triple in `<https://data.global.church/joshua-project/>` is a JP assertion; a triple in `<https://data.global.church/imb/>` is an IMB assertion.
+
+2. **Non-conflicting perspectives** — Different organizations can make different claims about the same people group. JP might assess engagement at one level while IMB assesses it differently. Both coexist in the graph, each in its own named graph.
+
+3. **Independent refresh cycles** — Each bridge can reload its named graph without affecting other data sources. Clearing and reloading the JP graph doesn't touch IMB data.
+
+## How Bridges Populate Graphs
+
+Data flows into named graphs through **bridges** — automated pipelines that:
+
+1. Fetch data from an external source (API, database, file).
+2. Transform it into RDF triples using the GC Ontology vocabulary.
+3. Clear the target named graph.
+4. Load the new triples into that graph.
+
+Each bridge targets a specific named graph. The JP Bridge writes to `<https://data.global.church/joshua-project/>`, the IMB Bridge writes to `<https://data.global.church/imb/>`, and so on.
+
+## Querying Across Graphs
+
+**Query a specific graph** using the `GRAPH` keyword:
+
+```sparql
+SELECT ?org ?name WHERE {
+  GRAPH <https://data.global.church/orgs/> {
+    ?org a gc:Organization ;
+         gc:name ?name .
+  }
+}
+LIMIT 10
+```
+
+**Query across all graphs** by omitting the `GRAPH` keyword — the query matches triples in any graph:
+
+```sparql
+SELECT ?pg ?name WHERE {
+  ?pg a gc:PeopleGroup ;
+      gc:name ?name .
+}
+LIMIT 10
+```
+
+**Query with source attribution** — return the graph URI alongside results:
+
+```sparql
+SELECT ?graph ?pg ?name WHERE {
+  GRAPH ?graph {
+    ?pg a gc:PeopleGroup ;
+        gc:name ?name .
+  }
+}
+LIMIT 10
+```
+
+## The Default Graph
+
+The default graph (no named graph URI) contains the **GC OWL ontology itself** — class definitions, property definitions, and ontology metadata. It does not contain instance data. Cross-graph assertions maintained by Global.Church as the integration layer (such as `owl:sameAs` links and SKOS mappings) also reside here.

@@ -1,15 +1,60 @@
 ---
 title: What is Global.Church?
-description: An overview of the Global.Church ecosystem and how it helps mission organizations coordinate around shared data.
+description: An overview of the Global.Church ecosystem — shared infrastructure for mission coordination.
 ---
 
 # What is Global.Church?
 
-This page will cover:
-- The data silo problem in global missions — no single organization can see the full picture of who is engaged where
-- How Global.Church solves it with a shared ontology (GC Ontology) and a unified knowledge graph (GraphDB)
-- The ecosystem components: platform (data management), engage (engagement dashboard), API gateway, and GraphDB triplestore
-- Who it's for: mission agencies, church networks, denominations, and developers building on missions data
-- How the two integration patterns work: batch bridge materialization and runtime SPARQL federation
+## The Problem
 
-> Content will be provided by the documentation content authors.
+Imagine you want to answer a simple question: "Which unreached people groups have zero engagement from any organization worldwide?"
+
+Today, no single organization can answer that. Every mission agency, church network, and denomination tracks its own data in its own systems. Wycliffe knows where Bible translations are happening. IMB tracks church planting progress. Joshua Project maintains engagement assessments. But none of them can see the full picture, because everyone's data lives in silos.
+
+The result is blind spots — people groups that fall through the cracks because no one realizes that *no one* is working there.
+
+## The Solution
+
+Global.Church is shared infrastructure for the global church. It gives independent organizations a way to coordinate around shared data without giving up control of their own systems.
+
+The platform has four building blocks:
+
+- **A common schema** (the GC Ontology) that defines a shared vocabulary for people groups, organizations, ministry activities, and resources. When two organizations talk about "engagement," they mean the same thing.
+- **A shared knowledge graph** (GraphDB) that brings data from multiple sources into one queryable store — currently holding over 3.2 million facts from Joshua Project, IMB, HIS Registries, and 37,000+ organizations.
+- **Data pipelines** (called "bridges") that pull data from external sources, transform it into the shared schema, and load it into the knowledge graph.
+- **A unified API gateway** that lets developers query all of this through REST endpoints, SPARQL queries, or an MCP server.
+
+## The Ecosystem
+
+Global.Church is made up of several interconnected services:
+
+**[platform.global.church](https://platform.global.church)** — The data management and developer platform. This is where you manage church data, explore the church directory and 3D globe, generate API keys, and interact with the knowledge graph through an MCP chat interface. It also hosts admin tools for user management and claim review.
+
+**[engage.global.church](https://engage.global.church)** — The engagement dashboard. A map-based interface for exploring people groups, browsing mission resources, querying the knowledge graph with an AI agent, and submitting engagement claims on behalf of your organization.
+
+**[api.global.church](https://api.global.church)** — The API gateway. All programmatic access flows through here — REST endpoints under `/v0/`, a SPARQL endpoint for knowledge graph queries, and an MCP server for AI tool integration. Handles authentication, rate limiting, and routing.
+
+**[graphdb.global.church](https://graphdb.global.church)** — The knowledge graph. A triplestore holding over 3.2 million triples of structured data: people group assessments from Joshua Project and IMB, 37,000+ organizations, HIS registry codes for peoples, languages, religions, and geography, plus mission resources from IMB Collections, Jesus Film, and FCBH.
+
+**ontology.global.church** (coming soon) — The formal schema documentation, making the GC Ontology browsable and dereferenceable on the web.
+
+## How Data Flows
+
+The architecture follows two integration patterns:
+
+1. **Bridge materialization** — Automated pipelines pull batch data from external sources (Joshua Project API, IMB API, HIS Registries, Supabase church directory), transform it into RDF triples using the GC Ontology vocabulary, and load it into the knowledge graph. Each data source gets its own isolated named graph, so you always know where a fact came from.
+
+2. **Federation** (future) — Runtime queries that reach out to organizational endpoints on the fly, letting organizations share data without centralizing it.
+
+Both the engage and platform applications talk to the knowledge graph and Supabase through the API gateway, which handles authentication and routing.
+
+## Who It's For
+
+- **Mission agencies** — See the full picture of global engagement, find gaps, and coordinate with other organizations.
+- **Church networks and denominations** — Contribute church data and discover what's happening in your region.
+- **Data stewards** — Run data bridges, manage knowledge graph data, and ensure data quality.
+- **Developers** — Build applications on top of the API, query the knowledge graph with SPARQL, or integrate via the MCP server.
+
+## Next Steps
+
+Ready to dig deeper? Learn the [Key Concepts](/docs/guides/key-concepts) behind the data model.

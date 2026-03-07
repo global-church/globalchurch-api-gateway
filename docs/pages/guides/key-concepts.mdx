@@ -1,16 +1,82 @@
 ---
 title: Key Concepts
-description: Core terminology and concepts you need to understand when working with the Global.Church platform.
+description: Triples, namespaces, core types, and the data model behind Global.Church.
 ---
 
 # Key Concepts
 
-This page will cover:
-- **Knowledge Graph** — what a triplestore is and why RDF/SPARQL matter for missions data
-- **GC Ontology** — the shared schema (OWL + SHACL) that defines classes like PeopleGroup, Organization, Assessment, and MissionResource
-- **Named Graphs** — how data from different sources (Joshua Project, IMB, HIS Registries) is isolated and governed
-- **People Group in Country (PGIC)** — the fundamental unit of analysis, keyed by ROP3 + ROG3 codes from HIS Registries
-- **SKOS Vocabularies** — standardized concept schemes for religions, languages, geography, and assessment methodologies
-- **Bridges** — batch data pipelines that transform external source data into RDF and load it into GraphDB
+This page introduces the foundational ideas behind the Global.Church data model. You don't need to be an ontology expert — just a developer who wants to understand how the data is structured.
 
-> Content will be provided by the documentation content authors.
+## What's a Triple?
+
+The knowledge graph stores everything as **triples** — simple subject-predicate-object statements. Think of them as sentences:
+
+- "Wycliffe **is a** Organization"
+- "Wycliffe **serves** the Somali people group"
+- "The Somali people group **has population** 25,377,558"
+
+Each triple is a single fact. The knowledge graph is millions of these facts linked together. When you query the graph with SPARQL, you're pattern-matching across these triples to find answers.
+
+A triple uses URIs (web addresses) to identify things unambiguously. The Wycliffe example above actually looks like this in the graph:
+
+```
+<https://data.global.church/org/wycliffe> a gc:Organization .
+```
+
+## Namespaces
+
+Because URIs are long, we use short **prefixes** as abbreviations:
+
+| Prefix | Full URI | What it covers |
+|---|---|---|
+| `gc:` | `https://ontology.global.church/core#` | Core Global.Church concepts — the shared vocabulary |
+| `jp:` | `https://ontology.global.church/joshuaproject#` | Joshua Project-owned concepts (engagement scales, JP metadata) |
+| `imb:` | `https://ontology.global.church/imb#` | IMB-owned concepts (GSEC levels, SPI categories, assessment properties) |
+
+So `gc:Organization` is shorthand for `https://ontology.global.church/core#Organization`.
+
+Why three namespaces? Because **ownership matters**. Joshua Project designed the JP Scale and the 3D Insight model — those concepts belong in `jp:`. IMB defined GSEC levels and SPI categories — those belong in `imb:`. The `gc:` namespace holds the shared vocabulary that Global.Church maintains as the integration layer.
+
+## The Four Core Types
+
+The knowledge graph is organized around four main types of things:
+
+| Type | What it represents | Example |
+|---|---|---|
+| [Organization](https://ontology.global.church/core#Organization) | A mission agency, church, denomination, or network | Wycliffe, IMB, First Baptist Church |
+| [PeopleGroup](https://ontology.global.church/core#PeopleGroup) | An ethnolinguistic people group, often scoped to a country | Somali in Kenya, Han Chinese in China |
+| [MinistryActivity](https://ontology.global.church/core#MinistryActivity) | A ministry event or ongoing work — church planting, Bible translation, training | A prayer walk in Nairobi, a translation project |
+| [MissionResource](https://ontology.global.church/core#MissionResource) | A resource used in ministry — Scripture, media, training materials | The Jesus Film in Somali, a discipleship curriculum |
+
+These four types are what most queries revolve around: which organizations are engaging which people groups, through what activities, using what resources.
+
+## The PROV-O Foundation
+
+Every type in the graph fits into one of three categories from the W3C PROV-O standard:
+
+- **Agent** — Who acts. Organizations, teams, and people.
+- **Activity** — What happened. Ministry activities, assessments.
+- **Entity** — What was produced or tracked. People groups, resources, assessment results.
+
+This isn't just academic classification — it gives every piece of data a built-in provenance story. You can always trace back: who said this? When? Based on what evidence?
+
+Reference data like language codes, religion codes, and geographic codes sit outside this system. They're stable classification vocabularies that data points *to*, not data that needs its own provenance trail.
+
+## Named Graphs
+
+Data from different sources lives in separate **named graphs**. Think of them as labeled containers:
+
+- Joshua Project data lives in `<https://data.global.church/joshua-project/>`
+- IMB data lives in `<https://data.global.church/imb/>`
+- Organization data lives in `<https://data.global.church/orgs/>`
+- HIS registry codes live in `<https://data.global.church/his-registries/>`
+
+This isolation model keeps provenance clear. If Joshua Project says a people group is at Phase 2 engagement and IMB says it's at a different level, both facts coexist in the graph — each in its own named graph. Neither is "wrong." They're different organizational perspectives, and the query layer can present both with their source attribution.
+
+When you write SPARQL queries, you can target a specific graph or query across all of them.
+
+## Next Steps
+
+- [Get an API Key](/docs/guides/get-an-api-key) to start querying the knowledge graph
+- Explore the [Named Graph Conventions](/docs/guides/reference/named-graph-conventions) for the full list of graphs
+- Browse [URI Patterns](/docs/guides/reference/uri-patterns) to understand how entities are identified
