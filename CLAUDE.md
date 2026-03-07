@@ -51,6 +51,7 @@ Exposes `churches_search_v1` tool. Auth via Bearer token or `?apiKey=` query par
 |--------|----------|-------------|---------|
 | POST | `/v0/onboarding/claim-org` | `/v1/onboarding/claim-org` | Supabase Edge Function |
 | GET/POST | `/v0/onboarding/check-user` | `/v1/onboarding/check-user` | Supabase Edge Function |
+| PATCH | `/v0/profile` | — | Supabase Edge Function |
 | GET | `/v0/admin/claims` | `/v1/admin/claims` | Supabase Edge Function |
 | POST | `/v0/admin/claims/review` | `/v1/admin/claims/review` | Supabase Edge Function |
 | GET | `/v0/engagement-claims` | `/v1/engagement-claims` | Supabase Edge Function |
