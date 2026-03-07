@@ -90,7 +90,7 @@ const config: ZudokuConfig = {
   //   audience: "https://api.example.com/",
   // },
   redirects: [
-    { from: "/", to: "/docs/guides/what-is-global-church" },
+    { from: "/", to: "/guides/what-is-global-church" },
   ],
   apiKeys: {
     enabled: true,
