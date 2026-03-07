@@ -14,34 +14,48 @@
 
 The Zuplo API gateway that sits in front of both GraphDB (knowledge graph) and Supabase (church directory). Handles authentication, rate limiting, CORS, and request routing. Also exposes an MCP server endpoint for AI agent integration.
 
-Deployed at: **global-church-main-ba4d06e.zuplo.app**
+Deployed at: **api.global.church** (custom domain, migrated from `global-church-main-ba4d06e.zuplo.app`)
 
 ## Routes
 
-### GC-Core (Knowledge Graph)
+Both `/v0/` (new) and `/v1/` (legacy) routes are served. Consumers should migrate to `/v0/`. Legacy routes will be removed after a 30-day deprecation window.
 
-| Method | Path | Backend | Purpose |
-|--------|------|---------|---------|
-| POST | `/v1/gc-core/sparql` | GraphDB SPARQL endpoint | Query the knowledge graph |
-| POST | `/v1/gc-core/ingest` | GraphDB statements endpoint | Ingest RDF triples (Turtle, N-Triples, RDF/XML) |
-| GET | `/v1/gc-core/health` | GraphDB size endpoint | Health check |
+### Knowledge Graph
+
+| Method | New Path | Legacy Path | Backend | Purpose |
+|--------|----------|-------------|---------|---------|
+| POST | `/v0/sparql` | `/v1/gc-core/sparql` | GraphDB SPARQL endpoint | Query the knowledge graph |
+| POST | `/v0/ingest` | `/v1/gc-core/ingest` | GraphDB statements endpoint | Ingest RDF triples (Turtle, N-Triples, RDF/XML) |
+| GET | `/v0/health` | `/v1/gc-core/health` | GraphDB size endpoint | Health check |
 
 Accept headers for SPARQL: `application/sparql-results+json`, `application/sparql-results+xml`, `text/csv`, `text/turtle`
 
-### Church Search (Directory)
+### Organization Search (Directory)
 
-| Method | Path | Backend | Purpose |
-|--------|------|---------|---------|
-| GET | `/v1/churches/search` | Supabase Edge Function | Free-text, geo, filter search |
-| GET | `/v1/churches/{id}` | Supabase Edge Function | Fetch full church details |
+| Method | New Path | Legacy Path | Backend | Purpose |
+|--------|----------|-------------|---------|---------|
+| GET | `/v0/orgs/search` | `/v1/churches/search` | Supabase Edge Function | Free-text, geo, filter search |
+| GET | `/v0/orgs/{id}` | `/v1/churches/{id}` | Supabase Edge Function | Fetch full org details |
 
 ### MCP Server
 
-| Method | Path | Purpose |
-|--------|------|---------|
-| POST | `/mcp` | MCP tool listing endpoint for AI agents |
+| Method | New Path | Legacy Path | Purpose |
+|--------|----------|-------------|---------|
+| POST | `/v0/mcp` | `/mcp` | MCP tool listing endpoint for AI agents |
 
 Exposes `churches_search_v1` tool. Auth via Bearer token or `?apiKey=` query param.
+
+### Onboarding & Claims
+
+| Method | New Path | Legacy Path | Backend |
+|--------|----------|-------------|---------|
+| POST | `/v0/onboarding/claim-org` | `/v1/onboarding/claim-org` | Supabase Edge Function |
+| GET/POST | `/v0/onboarding/check-user` | `/v1/onboarding/check-user` | Supabase Edge Function |
+| GET | `/v0/admin/claims` | `/v1/admin/claims` | Supabase Edge Function |
+| POST | `/v0/admin/claims/review` | `/v1/admin/claims/review` | Supabase Edge Function |
+| GET | `/v0/engagement-claims` | `/v1/engagement-claims` | Supabase Edge Function |
+| POST | `/v0/engagement-claims/submit` | `/v1/engagement-claims/submit` | Supabase Edge Function |
+| POST | `/v0/hex-viewport` | `/v1/hex-viewport` | Supabase Edge Function |
 
 ## Policies
 

@@ -14,14 +14,20 @@
             "in": "query",
             "name": "q",
             "description": "Free-text search across name/address/website (ranked). Only include this field if the user has explicitly requested it",
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "example": "grace church"
           },
           {
             "in": "query",
             "name": "country",
             "description": "Country code (ISO 3166-1 alpha-3). Example: USA, NGA, GBR.",
-            "schema": { "type": "string", "minLength": 3, "maxLength": 3 },
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3
+            },
             "example": "USA"
           },
           {
@@ -30,7 +36,14 @@
             "description": "Top-level belief family. AGENT INSTRUCTION:Only include this field if the user has explicitly requested it.",
             "schema": {
               "type": "string",
-              "enum": ["roman_catholic", "protestant", "orthodox", "anglican", "other", "unknown"]
+              "enum": [
+                "roman_catholic",
+                "protestant",
+                "orthodox",
+                "anglican",
+                "other",
+                "unknown"
+              ]
             },
             "example": "roman_catholic"
           },
@@ -38,7 +51,9 @@
             "in": "query",
             "name": "trinitarian",
             "description": "Filter by Trinitarian belief. Currently redundant since we only support Trinitarian churches. AGENT INSTRUCTION: Never include this field.",
-            "schema": { "type": "boolean" },
+            "schema": {
+              "type": "boolean"
+            },
             "example": true,
             "deprecated": true
           },
@@ -46,21 +61,29 @@
             "in": "query",
             "name": "region",
             "description": "State/province/region code (e.g., US state). Most non-US regions are not supported. Use with caution. AGENT INSTRUCTION: You should almost never include this field.",
-            "schema": { "type": "string", "minLength": 2, "maxLength": 32 },
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 32
+            },
             "example": "CA"
           },
           {
             "in": "query",
             "name": "locality",
             "description": "City/locality/town name.",
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "example": "El Cajon"
           },
           {
             "in": "query",
             "name": "postal_code",
             "description": "Postal/ZIP code prefix (prefix match).",
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "example": "92020"
           },
           {
@@ -69,14 +92,25 @@
             "description": "Service languages (array) using ISO 639-3 language codes. Encoded as repeated keys (e.g., ?languages=eng&languages=spa). Only include this parameter if the user has explicitly requested it.",
             "schema": {
               "type": "array",
-              "items": { "type": "string" },
+              "items": {
+                "type": "string"
+              },
               "minItems": 1
             },
             "style": "form",
             "explode": true,
             "examples": {
-              "english_and_spanish": { "value": ["eng","spa"] },
-              "norwegian": { "value": ["nor"] }
+              "english_and_spanish": {
+                "value": [
+                  "eng",
+                  "spa"
+                ]
+              },
+              "norwegian": {
+                "value": [
+                  "nor"
+                ]
+              }
             }
           },
           {
@@ -85,21 +119,41 @@
             "description": "Programs/ministries offered (array). Partial/ILIKE match per token. Only include this parameter if the user has explicitly requested it.",
             "schema": {
               "type": "array",
-              "items": { "type": "string" },
+              "items": {
+                "type": "string"
+              },
               "minItems": 1
             },
             "style": "form",
             "explode": true,
             "examples": {
-              "example_1": { "value": ["kids ministry","missions","youth ministry"] },
-              "example_2": { "value": ["christian women's council","music department","prayer ministry","young women's christian council","youth department"] }
+              "example_1": {
+                "value": [
+                  "kids ministry",
+                  "missions",
+                  "youth ministry"
+                ]
+              },
+              "example_2": {
+                "value": [
+                  "christian women's council",
+                  "music department",
+                  "prayer ministry",
+                  "young women's christian council",
+                  "youth department"
+                ]
+              }
             }
           },
           {
             "in": "query",
             "name": "limit",
             "description": "Max results to return. AGENT INSTRUCTION: Default 20.",
-            "schema": { "type": "integer", "minimum": 1, "maximum": 10000 },
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000
+            },
             "example": 20
           },
           {
@@ -117,63 +171,99 @@
             "in": "query",
             "name": "min_lat",
             "description": "Minimum latitude in decimal degrees.",
-            "schema": { "type": "number", "minimum": -90, "maximum": 90 },
+            "schema": {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
             "example": 32.5
           },
           {
             "in": "query",
             "name": "max_lat",
             "description": "Maximum latitude in decimal degrees.",
-            "schema": { "type": "number", "minimum": -90, "maximum": 90 },
+            "schema": {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
             "example": 33.4
           },
           {
             "in": "query",
             "name": "min_lng",
             "description": "Minimum longitude in decimal degrees.",
-            "schema": { "type": "number", "minimum": -180, "maximum": 180 },
+            "schema": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
             "example": -117.5
           },
           {
             "in": "query",
             "name": "max_lng",
             "description": "Maximum longitude in decimal degrees.",
-            "schema": { "type": "number", "minimum": -180, "maximum": 180 },
+            "schema": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
             "example": -116.8
           },
           {
             "in": "query",
             "name": "center_lat",
             "description": "Center latitude in decimal degrees.",
-            "schema": { "type": "number", "minimum": -90, "maximum": 90 },
+            "schema": {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
             "example": 32.7157
           },
           {
             "in": "query",
             "name": "center_lng",
             "description": "Center longitude in decimal degrees.",
-            "schema": { "type": "number", "minimum": -180, "maximum": 180 },
+            "schema": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
             "example": -117.1611
           },
           {
             "in": "query",
             "name": "radius_km",
             "description": "Search radius in kilometers.",
-            "schema": { "type": "number", "minimum": 0.1, "maximum": 200 },
+            "schema": {
+              "type": "number",
+              "minimum": 0.1,
+              "maximum": 200
+            },
             "example": 25
           },
           {
             "in": "query",
             "name": "fields",
             "description": "Comma-separated list of columns to include. Columns map to api.v1_churches.",
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "example": "name,locality,country"
           },
           {
             "in": "query",
             "name": "format",
             "description": "Response format. `json` returns { items: [...] }. `geojson` returns a FeatureCollection.",
-            "schema": { "type": "string", "enum": ["json","geojson"] },
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "geojson"
+              ]
+            },
             "example": "json"
           }
         ],
@@ -209,8 +299,14 @@
                 "max_lat": 33.5,
                 "min_lng": -117.5,
                 "max_lng": -116.5,
-                "languages": ["eng","spa"],
-                "programs": ["youth","kids"]
+                "languages": [
+                  "eng",
+                  "spa"
+                ],
+                "programs": [
+                  "youth",
+                  "kids"
+                ]
               }
             }
           }
@@ -227,12 +323,18 @@
                       "properties": {
                         "items": {
                           "type": "array",
-                          "items": { "$ref": "#/components/schemas/ChurchV1" }
+                          "items": {
+                            "$ref": "#/components/schemas/ChurchV1"
+                          }
                         }
                       },
-                      "required": ["items"]
+                      "required": [
+                        "items"
+                      ]
                     },
-                    { "$ref": "#/components/schemas/GeoJSONFeatureCollection" }
+                    {
+                      "$ref": "#/components/schemas/GeoJSONFeatureCollection"
+                    }
                   ]
                 }
               }
@@ -259,7 +361,9 @@
             }
           }
         },
-        "tags": ["Churches"],
+        "tags": [
+          "Churches"
+        ],
         "operationId": "churches_search_v1"
       }
     },
@@ -285,7 +389,9 @@
           "shadow_mountain_details": {
             "summary": "Fetch full details for Shadow Mountain Community Church",
             "value": {
-              "pathParams": { "id": "9e1c2a7d-4c33-4b8b-9d7a-1a2b3c4d5e6f" }
+              "pathParams": {
+                "id": "9e1c2a7d-4c33-4b8b-9d7a-1a2b3c4d5e6f"
+              }
             }
           }
         },
@@ -294,7 +400,9 @@
             "description": "OK",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ChurchV1" }
+                "schema": {
+                  "$ref": "#/components/schemas/ChurchV1"
+                }
               }
             }
           },
@@ -322,7 +430,9 @@
             }
           }
         },
-        "tags": ["Churches"],
+        "tags": [
+          "Churches"
+        ],
         "operationId": "churches_get_v1"
       }
     },
@@ -334,7 +444,10 @@
         "operationId": "mcp_server",
         "x-zuplo-route": {
           "corsPolicy": "custom-cors",
-          "mcp": { "type": "tool", "enabled": false },
+          "mcp": {
+            "type": "tool",
+            "enabled": false
+          },
           "handler": {
             "export": "mcpServerHandler",
             "module": "$import(@zuplo/runtime)",
@@ -342,7 +455,11 @@
               "name": "global-church-mcp-server",
               "version": "1.0.0",
               "debugMode": true,
-              "openApiFilePaths": [{ "filePath": "./config/routes.oas.json" }]
+              "openApiFilePaths": [
+                {
+                  "filePath": "./config/routes.oas.json"
+                }
+              ]
             }
           },
           "policies": {
@@ -360,7 +477,9 @@
         "summary": "Execute SPARQL query",
         "description": "Proxies SPARQL queries to the GC-Core ontology repository in GraphDB.",
         "operationId": "gc_core_sparql",
-        "tags": ["GC-Core Ontology"],
+        "tags": [
+          "GC-Core Ontology"
+        ],
         "parameters": [
           {
             "in": "header",
@@ -402,29 +521,40 @@
                       "properties": {
                         "vars": {
                           "type": "array",
-                          "items": { "type": "string" }
+                          "items": {
+                            "type": "string"
+                          }
                         }
                       },
-                      "required": ["vars"]
+                      "required": [
+                        "vars"
+                      ]
                     },
                     "results": {
                       "type": "object",
                       "properties": {
                         "bindings": {
                           "type": "array",
-                          "items": { "type": "object" }
+                          "items": {
+                            "type": "object"
+                          }
                         }
                       },
-                      "required": ["bindings"]
+                      "required": [
+                        "bindings"
+                      ]
                     }
                   },
-                  "required": ["head", "results"]
+                  "required": [
+                    "head",
+                    "results"
+                  ]
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request — invalid SPARQL query"
+            "description": "Bad request \u2014 invalid SPARQL query"
           }
         },
         "x-zuplo-route": {
@@ -450,7 +580,9 @@
       "options": {
         "summary": "CORS preflight for SPARQL",
         "operationId": "gc_core_sparql_preflight",
-        "tags": ["GC-Core Ontology"],
+        "tags": [
+          "GC-Core Ontology"
+        ],
         "responses": {
           "204": {
             "description": "No content"
@@ -478,7 +610,9 @@
         "summary": "Ingest RDF triples",
         "description": "Inserts RDF triples into the GC-Core ontology repository in GraphDB.",
         "operationId": "gc_core_ingest",
-        "tags": ["GC-Core Ontology"],
+        "tags": [
+          "GC-Core Ontology"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -505,7 +639,7 @@
             "description": "Triples ingested successfully"
           },
           "400": {
-            "description": "Bad request — malformed RDF data"
+            "description": "Bad request \u2014 malformed RDF data"
           },
           "422": {
             "description": "SHACL validation failed"
@@ -534,7 +668,9 @@
       "options": {
         "summary": "CORS preflight for ingest",
         "operationId": "gc_core_ingest_preflight",
-        "tags": ["GC-Core Ontology"],
+        "tags": [
+          "GC-Core Ontology"
+        ],
         "responses": {
           "204": {
             "description": "No content"
@@ -562,21 +698,47 @@
         "summary": "Hex viewport query",
         "description": "Proxies hex grid viewport queries to the Supabase Edge Function `hex-viewport`. Returns H3 hex cells with population and classification data for the given bounding box.",
         "operationId": "hex_viewport",
-        "tags": ["Hex Grid"],
+        "tags": [
+          "Hex Grid"
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["west", "south", "east", "north", "zoom"],
+                "required": [
+                  "west",
+                  "south",
+                  "east",
+                  "north",
+                  "zoom"
+                ],
                 "properties": {
-                  "west": { "type": "number", "description": "Western longitude bound" },
-                  "south": { "type": "number", "description": "Southern latitude bound" },
-                  "east": { "type": "number", "description": "Eastern longitude bound" },
-                  "north": { "type": "number", "description": "Northern latitude bound" },
-                  "zoom": { "type": "integer", "description": "Map zoom level" },
-                  "rog_code": { "type": "string", "description": "ROG country code filter" }
+                  "west": {
+                    "type": "number",
+                    "description": "Western longitude bound"
+                  },
+                  "south": {
+                    "type": "number",
+                    "description": "Southern latitude bound"
+                  },
+                  "east": {
+                    "type": "number",
+                    "description": "Eastern longitude bound"
+                  },
+                  "north": {
+                    "type": "number",
+                    "description": "Northern latitude bound"
+                  },
+                  "zoom": {
+                    "type": "integer",
+                    "description": "Map zoom level"
+                  },
+                  "rog_code": {
+                    "type": "string",
+                    "description": "ROG country code filter"
+                  }
                 }
               }
             }
@@ -592,7 +754,9 @@
                   "properties": {
                     "hexes": {
                       "type": "array",
-                      "items": { "type": "object" }
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -623,7 +787,9 @@
       "options": {
         "summary": "CORS preflight for hex viewport",
         "operationId": "hex_viewport_preflight",
-        "tags": ["Hex Grid"],
+        "tags": [
+          "Hex Grid"
+        ],
         "responses": {
           "204": {
             "description": "No content"
@@ -651,25 +817,58 @@
         "summary": "Claim organization",
         "description": "Proxies org claiming requests to the Supabase Edge Function `claim-org`. Creates user profile and org claim record, determines claim result based on email domain matching.",
         "operationId": "onboarding_claim_org",
-        "tags": ["Onboarding"],
+        "tags": [
+          "Onboarding"
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["userEmail", "firstName", "lastName", "roles", "orgName", "isNewOrg"],
+                "required": [
+                  "userEmail",
+                  "firstName",
+                  "lastName",
+                  "roles",
+                  "orgName",
+                  "isNewOrg"
+                ],
                 "properties": {
-                  "userEmail": { "type": "string", "format": "email" },
-                  "firstName": { "type": "string" },
-                  "lastName": { "type": "string" },
-                  "roles": { "type": "array", "items": { "type": "string" } },
-                  "web3authVerifier": { "type": "string" },
-                  "orgUri": { "type": "string" },
-                  "orgName": { "type": "string" },
-                  "orgDomain": { "type": "string" },
-                  "isNewOrg": { "type": "boolean" },
-                  "newOrgName": { "type": "string" }
+                  "userEmail": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  },
+                  "roles": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "web3authVerifier": {
+                    "type": "string"
+                  },
+                  "orgUri": {
+                    "type": "string"
+                  },
+                  "orgName": {
+                    "type": "string"
+                  },
+                  "orgDomain": {
+                    "type": "string"
+                  },
+                  "isNewOrg": {
+                    "type": "boolean"
+                  },
+                  "newOrgName": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -683,8 +882,18 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "resultVariant": { "type": "string", "enum": ["claimed", "request-sent", "manual-review", "new-org"] },
-                    "orgName": { "type": "string" }
+                    "resultVariant": {
+                      "type": "string",
+                      "enum": [
+                        "claimed",
+                        "request-sent",
+                        "manual-review",
+                        "new-org"
+                      ]
+                    },
+                    "orgName": {
+                      "type": "string"
+                    }
                   }
                 }
               }
@@ -714,7 +923,9 @@
       "options": {
         "summary": "CORS preflight for claim-org",
         "operationId": "onboarding_claim_org_preflight",
-        "tags": ["Onboarding"],
+        "tags": [
+          "Onboarding"
+        ],
         "responses": {
           "204": {
             "description": "No content"
@@ -742,13 +953,18 @@
         "summary": "Check user and org claim (GET)",
         "description": "Proxies to the Supabase Edge Function `check-user`. Returns user profile and approved org claim info for the given email.",
         "operationId": "onboarding_check_user_get",
-        "tags": ["Onboarding"],
+        "tags": [
+          "Onboarding"
+        ],
         "parameters": [
           {
             "in": "query",
             "name": "email",
             "required": true,
-            "schema": { "type": "string", "format": "email" }
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
           }
         ],
         "responses": {
@@ -759,14 +975,28 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "exists": { "type": "boolean" },
-                    "firstName": { "type": "string" },
-                    "lastName": { "type": "string" },
-                    "orgUri": { "type": "string" },
-                    "orgName": { "type": "string" },
-                    "orgType": { "type": "string" }
+                    "exists": {
+                      "type": "boolean"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
+                      "type": "string"
+                    },
+                    "orgUri": {
+                      "type": "string"
+                    },
+                    "orgName": {
+                      "type": "string"
+                    },
+                    "orgType": {
+                      "type": "string"
+                    }
                   },
-                  "required": ["exists"]
+                  "required": [
+                    "exists"
+                  ]
                 }
               }
             }
@@ -796,16 +1026,23 @@
         "summary": "Check if user exists (POST)",
         "description": "Proxies to the Supabase Edge Function `check-user`. Checks if a user profile exists for the given email address.",
         "operationId": "onboarding_check_user",
-        "tags": ["Onboarding"],
+        "tags": [
+          "Onboarding"
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["email"],
+                "required": [
+                  "email"
+                ],
                 "properties": {
-                  "email": { "type": "string", "format": "email" }
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
                 }
               }
             }
@@ -819,11 +1056,19 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "exists": { "type": "boolean" },
-                    "firstName": { "type": "string" },
-                    "lastName": { "type": "string" }
+                    "exists": {
+                      "type": "boolean"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
+                      "type": "string"
+                    }
                   },
-                  "required": ["exists"]
+                  "required": [
+                    "exists"
+                  ]
                 }
               }
             }
@@ -852,7 +1097,9 @@
       "options": {
         "summary": "CORS preflight for check-user",
         "operationId": "onboarding_check_user_preflight",
-        "tags": ["Onboarding"],
+        "tags": [
+          "Onboarding"
+        ],
         "responses": {
           "204": {
             "description": "No content"
@@ -880,25 +1127,41 @@
         "summary": "List org claims",
         "description": "Proxies to the Supabase Edge Function `list-claims`. Returns paginated org claims for the admin dashboard. Supports status filtering and pagination via query params.",
         "operationId": "admin_list_claims",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "query",
             "name": "status",
             "description": "Filter by claim status.",
-            "schema": { "type": "string", "enum": ["pending", "approved", "rejected"] }
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "approved",
+                "rejected"
+              ]
+            }
           },
           {
             "in": "query",
             "name": "limit",
             "description": "Max rows to return (default 50, max 200).",
-            "schema": { "type": "integer", "minimum": 1, "maximum": 200 }
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
           },
           {
             "in": "query",
             "name": "offset",
             "description": "Pagination offset (default 0).",
-            "schema": { "type": "integer", "minimum": 0 }
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
           }
         ],
         "responses": {
@@ -909,16 +1172,30 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "claims": { "type": "array", "items": { "type": "object" } },
-                    "total": { "type": "integer" }
+                    "claims": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
                   },
-                  "required": ["claims", "total"]
+                  "required": [
+                    "claims",
+                    "total"
+                  ]
                 }
               }
             }
           },
-          "401": { "description": "Missing admin email header" },
-          "403": { "description": "Not an admin" }
+          "401": {
+            "description": "Missing admin email header"
+          },
+          "403": {
+            "description": "Not an admin"
+          }
         },
         "x-zuplo-route": {
           "corsPolicy": "custom-cors",
@@ -943,7 +1220,9 @@
       "options": {
         "summary": "CORS preflight for list claims",
         "operationId": "admin_list_claims_preflight",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "responses": {
           "204": {
             "description": "No content"
@@ -971,19 +1250,39 @@
         "summary": "Review org claim",
         "description": "Proxies to the Supabase Edge Function `review-claim`. Approves or rejects an org claim.",
         "operationId": "admin_review_claim",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["claimId", "action", "adminEmail"],
+                "required": [
+                  "claimId",
+                  "action",
+                  "adminEmail"
+                ],
                 "properties": {
-                  "claimId": { "type": "string", "format": "uuid" },
-                  "action": { "type": "string", "enum": ["approve", "reject"] },
-                  "adminEmail": { "type": "string", "format": "email" },
-                  "notes": { "type": "string" }
+                  "claimId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "approve",
+                      "reject"
+                    ]
+                  },
+                  "adminEmail": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "notes": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -997,17 +1296,35 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": { "type": "boolean" },
-                    "claimId": { "type": "string" },
-                    "newStatus": { "type": "string", "enum": ["approved", "rejected"] }
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "claimId": {
+                      "type": "string"
+                    },
+                    "newStatus": {
+                      "type": "string",
+                      "enum": [
+                        "approved",
+                        "rejected"
+                      ]
+                    }
                   },
-                  "required": ["success", "claimId", "newStatus"]
+                  "required": [
+                    "success",
+                    "claimId",
+                    "newStatus"
+                  ]
                 }
               }
             }
           },
-          "403": { "description": "Not an admin" },
-          "404": { "description": "Claim not found" }
+          "403": {
+            "description": "Not an admin"
+          },
+          "404": {
+            "description": "Claim not found"
+          }
         },
         "x-zuplo-route": {
           "corsPolicy": "custom-cors",
@@ -1032,7 +1349,9 @@
       "options": {
         "summary": "CORS preflight for review claim",
         "operationId": "admin_review_claim_preflight",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "responses": {
           "204": {
             "description": "No content"
@@ -1060,43 +1379,67 @@
         "summary": "List engagement claims",
         "description": "Proxies to the Supabase Edge Function `list-engagement-claims`. Returns paginated engagement claims with optional filters by org, people group, country, and status.",
         "operationId": "list_engagement_claims",
-        "tags": ["Engagement"],
+        "tags": [
+          "Engagement"
+        ],
         "parameters": [
           {
             "in": "query",
             "name": "orgUri",
             "description": "Filter by claiming organization URI.",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "in": "query",
             "name": "rop3",
             "description": "Filter by people group ROP3 code.",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "in": "query",
             "name": "countryCode",
             "description": "Filter by ISO alpha-2 country code.",
-            "schema": { "type": "string", "minLength": 2, "maxLength": 2 }
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2
+            }
           },
           {
             "in": "query",
             "name": "status",
             "description": "Filter by claim status (default: active).",
-            "schema": { "type": "string", "enum": ["active", "paused", "completed"] }
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "paused",
+                "completed"
+              ]
+            }
           },
           {
             "in": "query",
             "name": "limit",
             "description": "Max rows to return (default 50, max 200).",
-            "schema": { "type": "integer", "minimum": 1, "maximum": 200 }
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
           },
           {
             "in": "query",
             "name": "offset",
             "description": "Pagination offset (default 0).",
-            "schema": { "type": "integer", "minimum": 0 }
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
           }
         ],
         "responses": {
@@ -1107,10 +1450,20 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "claims": { "type": "array", "items": { "type": "object" } },
-                    "total": { "type": "integer" }
+                    "claims": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
                   },
-                  "required": ["claims", "total"]
+                  "required": [
+                    "claims",
+                    "total"
+                  ]
                 }
               }
             }
@@ -1139,7 +1492,9 @@
       "options": {
         "summary": "CORS preflight for list engagement claims",
         "operationId": "list_engagement_claims_preflight",
-        "tags": ["Engagement"],
+        "tags": [
+          "Engagement"
+        ],
         "responses": {
           "204": {
             "description": "No content"
@@ -1167,30 +1522,78 @@
         "summary": "Submit engagement claim",
         "description": "Proxies to the Supabase Edge Function `submit-engagement-claim`. Creates a new self-reported engagement claim for an organization. Caller must have an approved org claim.",
         "operationId": "submit_engagement_claim",
-        "tags": ["Engagement"],
+        "tags": [
+          "Engagement"
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["orgUri", "orgName", "claimedByEmail", "engagementTypes"],
+                "required": [
+                  "orgUri",
+                  "orgName",
+                  "claimedByEmail",
+                  "engagementTypes"
+                ],
                 "properties": {
-                  "orgUri": { "type": "string", "description": "GraphDB URI of the claiming organization" },
-                  "orgName": { "type": "string", "description": "Display name of the organization" },
-                  "claimedByEmail": { "type": "string", "format": "email", "description": "Email of the submitting user" },
-                  "peopleGroupRop3": { "type": "string", "description": "ROP3 code of the target people group" },
-                  "peopleGroupName": { "type": "string", "description": "Display name of the people group" },
-                  "peopleGroupRog3": { "type": "string", "description": "ROG3 country code for PGIC composite key" },
-                  "countryCode": { "type": "string", "description": "ISO alpha-2 country code" },
-                  "countryName": { "type": "string", "description": "Display name of the country" },
+                  "orgUri": {
+                    "type": "string",
+                    "description": "GraphDB URI of the claiming organization"
+                  },
+                  "orgName": {
+                    "type": "string",
+                    "description": "Display name of the organization"
+                  },
+                  "claimedByEmail": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email of the submitting user"
+                  },
+                  "peopleGroupRop3": {
+                    "type": "string",
+                    "description": "ROP3 code of the target people group"
+                  },
+                  "peopleGroupName": {
+                    "type": "string",
+                    "description": "Display name of the people group"
+                  },
+                  "peopleGroupRog3": {
+                    "type": "string",
+                    "description": "ROG3 country code for PGIC composite key"
+                  },
+                  "countryCode": {
+                    "type": "string",
+                    "description": "ISO alpha-2 country code"
+                  },
+                  "countryName": {
+                    "type": "string",
+                    "description": "Display name of the country"
+                  },
                   "engagementTypes": {
                     "type": "array",
-                    "items": { "type": "string", "enum": ["CP", "DISC", "BT", "PR", "EVG", "MED", "HA", "TR", "FN"] },
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "CP",
+                        "DISC",
+                        "BT",
+                        "PR",
+                        "EVG",
+                        "MED",
+                        "HA",
+                        "TR",
+                        "FN"
+                      ]
+                    },
                     "minItems": 1,
                     "description": "Engagement type notation codes"
                   },
-                  "description": { "type": "string", "description": "Free-text description of the engagement" }
+                  "description": {
+                    "type": "string",
+                    "description": "Free-text description of the engagement"
+                  }
                 }
               }
             }
@@ -1204,16 +1607,31 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "claimId": { "type": "string", "format": "uuid" },
-                    "status": { "type": "string", "enum": ["active"] }
+                    "claimId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "active"
+                      ]
+                    }
                   },
-                  "required": ["claimId", "status"]
+                  "required": [
+                    "claimId",
+                    "status"
+                  ]
                 }
               }
             }
           },
-          "400": { "description": "Validation error" },
-          "403": { "description": "No approved org claim for this organization" }
+          "400": {
+            "description": "Validation error"
+          },
+          "403": {
+            "description": "No approved org claim for this organization"
+          }
         },
         "x-zuplo-route": {
           "corsPolicy": "custom-cors",
@@ -1238,7 +1656,9 @@
       "options": {
         "summary": "CORS preflight for submit engagement claim",
         "operationId": "submit_engagement_claim_preflight",
-        "tags": ["Engagement"],
+        "tags": [
+          "Engagement"
+        ],
         "responses": {
           "204": {
             "description": "No content"
@@ -1266,7 +1686,9 @@
         "summary": "GC-Core health check",
         "description": "Health check for the GC-Core ontology repository. Returns repository status and triple count. No authentication required.",
         "operationId": "gc_core_health",
-        "tags": ["GC-Core Ontology"],
+        "tags": [
+          "GC-Core Ontology"
+        ],
         "responses": {
           "200": {
             "description": "Repository is healthy",
@@ -1275,10 +1697,17 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "string" },
-                    "tripleCount": { "type": "integer" }
+                    "status": {
+                      "type": "string"
+                    },
+                    "tripleCount": {
+                      "type": "integer"
+                    }
                   },
-                  "required": ["status", "tripleCount"]
+                  "required": [
+                    "status",
+                    "tripleCount"
+                  ]
                 }
               }
             }
@@ -1308,7 +1737,1766 @@
       "options": {
         "summary": "CORS preflight for health",
         "operationId": "gc_core_health_preflight",
-        "tags": ["GC-Core Ontology"],
+        "tags": [
+          "GC-Core Ontology"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.GRAPHDB_URL}/repositories/gc-core/size",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
+    "/v0/orgs/search": {
+      "get": {
+        "summary": "Search churches (V0)",
+        "description": "Proxies to the Supabase Edge Function `churches-search`. Supports free-text, exact filters, viewport (bbox) and radius queries, arrays for languages/programs, optional field projection, and GeoJSON output. Last updated: 2025-09-04.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "description": "Free-text search across name/address/website (ranked). Only include this field if the user has explicitly requested it",
+            "schema": {
+              "type": "string"
+            },
+            "example": "grace church"
+          },
+          {
+            "in": "query",
+            "name": "country",
+            "description": "Country code (ISO 3166-1 alpha-3). Example: USA, NGA, GBR.",
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3
+            },
+            "example": "USA"
+          },
+          {
+            "in": "query",
+            "name": "belief",
+            "description": "Top-level belief family. AGENT INSTRUCTION:Only include this field if the user has explicitly requested it.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "roman_catholic",
+                "protestant",
+                "orthodox",
+                "anglican",
+                "other",
+                "unknown"
+              ]
+            },
+            "example": "roman_catholic"
+          },
+          {
+            "in": "query",
+            "name": "trinitarian",
+            "description": "Filter by Trinitarian belief. Currently redundant since we only support Trinitarian churches. AGENT INSTRUCTION: Never include this field.",
+            "schema": {
+              "type": "boolean"
+            },
+            "example": true,
+            "deprecated": true
+          },
+          {
+            "in": "query",
+            "name": "region",
+            "description": "State/province/region code (e.g., US state). Most non-US regions are not supported. Use with caution. AGENT INSTRUCTION: You should almost never include this field.",
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 32
+            },
+            "example": "CA"
+          },
+          {
+            "in": "query",
+            "name": "locality",
+            "description": "City/locality/town name.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "El Cajon"
+          },
+          {
+            "in": "query",
+            "name": "postal_code",
+            "description": "Postal/ZIP code prefix (prefix match).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "92020"
+          },
+          {
+            "in": "query",
+            "name": "languages",
+            "description": "Service languages (array) using ISO 639-3 language codes. Encoded as repeated keys (e.g., ?languages=eng&languages=spa). Only include this parameter if the user has explicitly requested it.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "style": "form",
+            "explode": true,
+            "examples": {
+              "english_and_spanish": {
+                "value": [
+                  "eng",
+                  "spa"
+                ]
+              },
+              "norwegian": {
+                "value": [
+                  "nor"
+                ]
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "programs",
+            "description": "Programs/ministries offered (array). Partial/ILIKE match per token. Only include this parameter if the user has explicitly requested it.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "style": "form",
+            "explode": true,
+            "examples": {
+              "example_1": {
+                "value": [
+                  "kids ministry",
+                  "missions",
+                  "youth ministry"
+                ]
+              },
+              "example_2": {
+                "value": [
+                  "christian women's council",
+                  "music department",
+                  "prayer ministry",
+                  "young women's christian council",
+                  "youth department"
+                ]
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Max results to return. AGENT INSTRUCTION: Default 20.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000
+            },
+            "example": 20
+          },
+          {
+            "in": "query",
+            "name": "id",
+            "description": "Filter by Global.Church's church_id field. UUIDv5 format. AGENT INSTRUCTION: You should almost never include this parameter.",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+            },
+            "example": "9e1c2a7d-4c33-4b8b-9d7a-1a2b3c4d5e6f"
+          },
+          {
+            "in": "query",
+            "name": "min_lat",
+            "description": "Minimum latitude in decimal degrees.",
+            "schema": {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
+            "example": 32.5
+          },
+          {
+            "in": "query",
+            "name": "max_lat",
+            "description": "Maximum latitude in decimal degrees.",
+            "schema": {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
+            "example": 33.4
+          },
+          {
+            "in": "query",
+            "name": "min_lng",
+            "description": "Minimum longitude in decimal degrees.",
+            "schema": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            "example": -117.5
+          },
+          {
+            "in": "query",
+            "name": "max_lng",
+            "description": "Maximum longitude in decimal degrees.",
+            "schema": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            "example": -116.8
+          },
+          {
+            "in": "query",
+            "name": "center_lat",
+            "description": "Center latitude in decimal degrees.",
+            "schema": {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
+            "example": 32.7157
+          },
+          {
+            "in": "query",
+            "name": "center_lng",
+            "description": "Center longitude in decimal degrees.",
+            "schema": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            "example": -117.1611
+          },
+          {
+            "in": "query",
+            "name": "radius_km",
+            "description": "Search radius in kilometers.",
+            "schema": {
+              "type": "number",
+              "minimum": 0.1,
+              "maximum": 200
+            },
+            "example": 25
+          },
+          {
+            "in": "query",
+            "name": "fields",
+            "description": "Comma-separated list of columns to include. Columns map to api.v1_churches.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "name,locality,country"
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "description": "Response format. `json` returns { items: [...] }. `geojson` returns a FeatureCollection.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "geojson"
+              ]
+            },
+            "example": "json"
+          }
+        ],
+        "x-examples": {
+          "el_cajon_catholic": {
+            "summary": "Roman Catholic churches in El Cajon, CA",
+            "value": {
+              "queryParams": {
+                "country": "USA",
+                "belief": "roman_catholic",
+                "locality": "El Cajon",
+                "fields": "name,locality,country,belief_type"
+              }
+            }
+          },
+          "radius_downtown_sd_geojson": {
+            "summary": "Radius search near downtown San Diego (GeoJSON for maps)",
+            "value": {
+              "queryParams": {
+                "center_lat": 32.7157,
+                "center_lng": -117.1611,
+                "radius_km": 10,
+                "fields": "name,latitude,longitude",
+                "format": "geojson"
+              }
+            }
+          },
+          "bbox_multi_filters": {
+            "summary": "Viewport search with language/program arrays",
+            "value": {
+              "queryParams": {
+                "min_lat": 32.5,
+                "max_lat": 33.5,
+                "min_lng": -117.5,
+                "max_lng": -116.5,
+                "languages": [
+                  "eng",
+                  "spa"
+                ],
+                "programs": [
+                  "youth",
+                  "kids"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/ChurchV1"
+                          }
+                        }
+                      },
+                      "required": [
+                        "items"
+                      ]
+                    },
+                    {
+                      "$ref": "#/components/schemas/GeoJSONFeatureCollection"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-partner-id",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/churches-search",
+              "forwardSearch": true,
+              "followRedirects": false
+            }
+          }
+        },
+        "tags": [
+          "Churches"
+        ],
+        "operationId": "churches_search_v0"
+      }
+    },
+    "/v0/orgs/{id}": {
+      "get": {
+        "summary": "Get church by ID (V0)",
+        "description": "Proxies to the Supabase Edge Function `churches-get`. Always returns the **full record** for a single church. This endpoint is intended to be used after a list/search so clients can fetch complete details (e.g., belief and livestream links) without managing field projections.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Global.Church church_id (UUIDv5).",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+            },
+            "example": "9e1c2a7d-4c33-4b8b-9d7a-1a2b3c4d5e6f"
+          }
+        ],
+        "x-examples": {
+          "shadow_mountain_details": {
+            "summary": "Fetch full details for Shadow Mountain Community Church",
+            "value": {
+              "pathParams": {
+                "id": "9e1c2a7d-4c33-4b8b-9d7a-1a2b3c4d5e6f"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChurchV1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-partner-id",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/churches-get?id=${request.params.id}",
+              "forwardSearch": true,
+              "followRedirects": false
+            }
+          }
+        },
+        "tags": [
+          "Churches"
+        ],
+        "operationId": "churches_get_v0"
+      }
+    },
+    "/v0/mcp": {
+      "post": {
+        "summary": "MCP Server (V0)",
+        "x-internal": true,
+        "description": "Handles MCP requests for the Global.Church API.",
+        "operationId": "mcp_server_v0",
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "mcp": {
+            "type": "tool",
+            "enabled": false
+          },
+          "handler": {
+            "export": "mcpServerHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "name": "global-church-mcp-server",
+              "version": "1.0.0",
+              "debugMode": true,
+              "openApiFilePaths": [
+                {
+                  "filePath": "./config/routes.oas.json"
+                }
+              ]
+            }
+          },
+          "policies": {
+            "inbound": [
+              "mcp-query-param-to-header-inbound",
+              "require-api-key",
+              "ratelimit-per-partner"
+            ]
+          }
+        }
+      }
+    },
+    "/v0/sparql": {
+      "post": {
+        "summary": "Execute SPARQL query (V0)",
+        "description": "Proxies SPARQL queries to the GC-Core ontology repository in GraphDB.",
+        "operationId": "gc_core_sparql_v0",
+        "tags": [
+          "GC-Core Ontology"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Accept",
+            "description": "Desired response format for SPARQL results.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "application/sparql-results+json",
+                "application/sparql-results+xml",
+                "text/csv",
+                "text/turtle"
+              ]
+            },
+            "example": "application/sparql-results+json"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/sparql-query": {
+              "schema": {
+                "type": "string"
+              },
+              "example": "SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 10"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SPARQL results",
+            "content": {
+              "application/sparql-results+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "head": {
+                      "type": "object",
+                      "properties": {
+                        "vars": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "vars"
+                      ]
+                    },
+                    "results": {
+                      "type": "object",
+                      "properties": {
+                        "bindings": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      },
+                      "required": [
+                        "bindings"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "head",
+                    "results"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request \u2014 invalid SPARQL query"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-graphdb-auth"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.GRAPHDB_URL}/repositories/gc-core",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for SPARQL (V0)",
+        "operationId": "gc_core_sparql_preflight_v0",
+        "tags": [
+          "GC-Core Ontology"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.GRAPHDB_URL}/repositories/gc-core",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
+    "/v0/ingest": {
+      "post": {
+        "summary": "Ingest RDF triples (V0)",
+        "description": "Inserts RDF triples into the GC-Core ontology repository in GraphDB.",
+        "operationId": "gc_core_ingest_v0",
+        "tags": [
+          "GC-Core Ontology"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "text/turtle": {
+              "schema": {
+                "type": "string"
+              },
+              "example": "@prefix gc: <https://ontology.global.church/> .\ngc:Church1 a gc:Church ;\n  gc:name \"Grace Church\" ."
+            },
+            "application/ld+json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "@context": "https://ontology.global.church/",
+                "@type": "Church",
+                "name": "Grace Church"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Triples ingested successfully"
+          },
+          "400": {
+            "description": "Bad request \u2014 malformed RDF data"
+          },
+          "422": {
+            "description": "SHACL validation failed"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-graphdb-auth"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.GRAPHDB_URL}/repositories/gc-core/statements",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for ingest (V0)",
+        "operationId": "gc_core_ingest_preflight_v0",
+        "tags": [
+          "GC-Core Ontology"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.GRAPHDB_URL}/repositories/gc-core/statements",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
+    "/v0/hex-viewport": {
+      "post": {
+        "summary": "Hex viewport query (V0)",
+        "description": "Proxies hex grid viewport queries to the Supabase Edge Function `hex-viewport`. Returns H3 hex cells with population and classification data for the given bounding box.",
+        "operationId": "hex_viewport_v0",
+        "tags": [
+          "Hex Grid"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "west",
+                  "south",
+                  "east",
+                  "north",
+                  "zoom"
+                ],
+                "properties": {
+                  "west": {
+                    "type": "number",
+                    "description": "Western longitude bound"
+                  },
+                  "south": {
+                    "type": "number",
+                    "description": "Southern latitude bound"
+                  },
+                  "east": {
+                    "type": "number",
+                    "description": "Eastern longitude bound"
+                  },
+                  "north": {
+                    "type": "number",
+                    "description": "Northern latitude bound"
+                  },
+                  "zoom": {
+                    "type": "integer",
+                    "description": "Map zoom level"
+                  },
+                  "rog_code": {
+                    "type": "string",
+                    "description": "ROG country code filter"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Hex cells in viewport",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hexes": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/hex-viewport",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for hex viewport (V0)",
+        "operationId": "hex_viewport_preflight_v0",
+        "tags": [
+          "Hex Grid"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/hex-viewport",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
+    "/v0/onboarding/claim-org": {
+      "post": {
+        "summary": "Claim organization (V0)",
+        "description": "Proxies org claiming requests to the Supabase Edge Function `claim-org`. Creates user profile and org claim record, determines claim result based on email domain matching.",
+        "operationId": "onboarding_claim_org_v0",
+        "tags": [
+          "Onboarding"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userEmail",
+                  "firstName",
+                  "lastName",
+                  "roles",
+                  "orgName",
+                  "isNewOrg"
+                ],
+                "properties": {
+                  "userEmail": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  },
+                  "roles": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "web3authVerifier": {
+                    "type": "string"
+                  },
+                  "orgUri": {
+                    "type": "string"
+                  },
+                  "orgName": {
+                    "type": "string"
+                  },
+                  "orgDomain": {
+                    "type": "string"
+                  },
+                  "isNewOrg": {
+                    "type": "boolean"
+                  },
+                  "newOrgName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Claim result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "resultVariant": {
+                      "type": "string",
+                      "enum": [
+                        "claimed",
+                        "request-sent",
+                        "manual-review",
+                        "new-org"
+                      ]
+                    },
+                    "orgName": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/claim-org",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for claim-org (V0)",
+        "operationId": "onboarding_claim_org_preflight_v0",
+        "tags": [
+          "Onboarding"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/claim-org",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
+    "/v0/onboarding/check-user": {
+      "get": {
+        "summary": "Check user and org claim (GET) (V0)",
+        "description": "Proxies to the Supabase Edge Function `check-user`. Returns user profile and approved org claim info for the given email.",
+        "operationId": "onboarding_check_user_get_v0",
+        "tags": [
+          "Onboarding"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "email",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User check result with optional org claim",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "exists": {
+                      "type": "boolean"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
+                      "type": "string"
+                    },
+                    "orgUri": {
+                      "type": "string"
+                    },
+                    "orgName": {
+                      "type": "string"
+                    },
+                    "orgType": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "exists"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/check-user",
+              "forwardSearch": true,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Check if user exists (POST) (V0)",
+        "description": "Proxies to the Supabase Edge Function `check-user`. Checks if a user profile exists for the given email address.",
+        "operationId": "onboarding_check_user_v0",
+        "tags": [
+          "Onboarding"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User check result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "exists": {
+                      "type": "boolean"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "exists"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/check-user",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for check-user (V0)",
+        "operationId": "onboarding_check_user_preflight_v0",
+        "tags": [
+          "Onboarding"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/check-user",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
+    "/v0/admin/claims": {
+      "get": {
+        "summary": "List org claims (V0)",
+        "description": "Proxies to the Supabase Edge Function `list-claims`. Returns paginated org claims for the admin dashboard. Supports status filtering and pagination via query params.",
+        "operationId": "admin_list_claims_v0",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "description": "Filter by claim status.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "approved",
+                "rejected"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Max rows to return (default 50, max 200).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "description": "Pagination offset (default 0).",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of org claims",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "claims": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "claims",
+                    "total"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing admin email header"
+          },
+          "403": {
+            "description": "Not an admin"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/list-claims",
+              "forwardSearch": true,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for list claims (V0)",
+        "operationId": "admin_list_claims_preflight_v0",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/list-claims",
+              "forwardSearch": true,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
+    "/v0/admin/claims/review": {
+      "post": {
+        "summary": "Review org claim (V0)",
+        "description": "Proxies to the Supabase Edge Function `review-claim`. Approves or rejects an org claim.",
+        "operationId": "admin_review_claim_v0",
+        "tags": [
+          "Admin"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "claimId",
+                  "action",
+                  "adminEmail"
+                ],
+                "properties": {
+                  "claimId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "approve",
+                      "reject"
+                    ]
+                  },
+                  "adminEmail": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "notes": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "claimId": {
+                      "type": "string"
+                    },
+                    "newStatus": {
+                      "type": "string",
+                      "enum": [
+                        "approved",
+                        "rejected"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "claimId",
+                    "newStatus"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not an admin"
+          },
+          "404": {
+            "description": "Claim not found"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/review-claim",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for review claim (V0)",
+        "operationId": "admin_review_claim_preflight_v0",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/review-claim",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
+    "/v0/engagement-claims": {
+      "get": {
+        "summary": "List engagement claims (V0)",
+        "description": "Proxies to the Supabase Edge Function `list-engagement-claims`. Returns paginated engagement claims with optional filters by org, people group, country, and status.",
+        "operationId": "list_engagement_claims_v0",
+        "tags": [
+          "Engagement"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "orgUri",
+            "description": "Filter by claiming organization URI.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "rop3",
+            "description": "Filter by people group ROP3 code.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "countryCode",
+            "description": "Filter by ISO alpha-2 country code.",
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "description": "Filter by claim status (default: active).",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "paused",
+                "completed"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Max rows to return (default 50, max 200).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "description": "Pagination offset (default 0).",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of engagement claims",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "claims": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "claims",
+                    "total"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/list-engagement-claims",
+              "forwardSearch": true,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for list engagement claims (V0)",
+        "operationId": "list_engagement_claims_preflight_v0",
+        "tags": [
+          "Engagement"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/list-engagement-claims",
+              "forwardSearch": true,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
+    "/v0/engagement-claims/submit": {
+      "post": {
+        "summary": "Submit engagement claim (V0)",
+        "description": "Proxies to the Supabase Edge Function `submit-engagement-claim`. Creates a new self-reported engagement claim for an organization. Caller must have an approved org claim.",
+        "operationId": "submit_engagement_claim_v0",
+        "tags": [
+          "Engagement"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "orgUri",
+                  "orgName",
+                  "claimedByEmail",
+                  "engagementTypes"
+                ],
+                "properties": {
+                  "orgUri": {
+                    "type": "string",
+                    "description": "GraphDB URI of the claiming organization"
+                  },
+                  "orgName": {
+                    "type": "string",
+                    "description": "Display name of the organization"
+                  },
+                  "claimedByEmail": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email of the submitting user"
+                  },
+                  "peopleGroupRop3": {
+                    "type": "string",
+                    "description": "ROP3 code of the target people group"
+                  },
+                  "peopleGroupName": {
+                    "type": "string",
+                    "description": "Display name of the people group"
+                  },
+                  "peopleGroupRog3": {
+                    "type": "string",
+                    "description": "ROG3 country code for PGIC composite key"
+                  },
+                  "countryCode": {
+                    "type": "string",
+                    "description": "ISO alpha-2 country code"
+                  },
+                  "countryName": {
+                    "type": "string",
+                    "description": "Display name of the country"
+                  },
+                  "engagementTypes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "CP",
+                        "DISC",
+                        "BT",
+                        "PR",
+                        "EVG",
+                        "MED",
+                        "HA",
+                        "TR",
+                        "FN"
+                      ]
+                    },
+                    "minItems": 1,
+                    "description": "Engagement type notation codes"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Free-text description of the engagement"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Claim created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "claimId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "active"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "claimId",
+                    "status"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "403": {
+            "description": "No approved org claim for this organization"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "require-api-key",
+              "ratelimit-per-partner",
+              "inject-supabase-jwt"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/submit-engagement-claim",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for submit engagement claim (V0)",
+        "operationId": "submit_engagement_claim_preflight_v0",
+        "tags": [
+          "Engagement"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": []
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.SUPABASE_FUNCTIONS_BASE}/submit-engagement-claim",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      }
+    },
+    "/v0/health": {
+      "get": {
+        "summary": "GC-Core health check (V0)",
+        "description": "Health check for the GC-Core ontology repository. Returns repository status and triple count. No authentication required.",
+        "operationId": "gc_core_health_v0",
+        "tags": [
+          "GC-Core Ontology"
+        ],
+        "responses": {
+          "200": {
+            "description": "Repository is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "tripleCount": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "tripleCount"
+                  ]
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Repository is unavailable"
+          }
+        },
+        "x-zuplo-route": {
+          "corsPolicy": "custom-cors",
+          "policies": {
+            "inbound": [
+              "inject-graphdb-auth"
+            ]
+          },
+          "handler": {
+            "export": "urlRewriteHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "rewritePattern": "${env.GRAPHDB_URL}/repositories/gc-core/size",
+              "forwardSearch": false,
+              "followRedirects": false
+            }
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight for health (V0)",
+        "operationId": "gc_core_health_preflight_v0",
+        "tags": [
+          "GC-Core Ontology"
+        ],
         "responses": {
           "204": {
             "description": "No content"
@@ -1338,81 +3526,267 @@
         "type": "object",
         "description": "Subset of columns exposed by api.v1_churches (field projection may shrink this).",
         "properties": {
-          "church_id": { "type": "string", "format": "uuid" },
-          "gers_id": { "type": "string", "format": "uuid", "nullable": true },
-          "name": { "type": "string" },
-          "pipeline_status": { "type": "string", "nullable": true },
-          "latitude": { "type": "number", "nullable": true },
-          "longitude": { "type": "number", "nullable": true },
-          "address": { "type": "string", "nullable": true },
-          "locality": { "type": "string", "nullable": true },
-          "region": { "type": "string", "nullable": true },
-          "postal_code": { "type": "string", "nullable": true },
-          "country": { "type": "string" },
-          "website": { "type": "string", "nullable": true },
-          "logo_url": { "type": "string", "nullable": true },
-          "logo_width": { "type": "integer", "nullable": true },
-          "logo_height": { "type": "integer", "nullable": true },
-          "logo_aspect_ratio": { "type": "number", "nullable": true },
-          "banner_url": { "type": "string", "nullable": true },
-          "banner_width": { "type": "integer", "nullable": true },
-          "banner_height": { "type": "integer", "nullable": true },
-          "banner_aspect_ratio": { "type": "number", "nullable": true },
-          "phone": { "type": "string", "nullable": true },
-          "created_at": { "type": "string", "format": "date-time" },
-          "updated_at": { "type": "string", "format": "date-time" },
-          "url_giving": { "type": "string", "nullable": true },
-          "url_beliefs": { "type": "string", "nullable": true },
-          "url_youtube": { "type": "string", "nullable": true },
-          "url_facebook": { "type": "string", "nullable": true },
-          "url_instagram": { "type": "string", "nullable": true },
-          "url_tiktok": { "type": "string", "nullable": true },
-          "url_campus": { "type": "string", "nullable": true },
-          "url_live": { "type": "string", "nullable": true },
-          "contact_emails": { "type": "array", "items": { "type": "string" }, "nullable": true },
-          "contact_phones": { "type": "array", "items": { "type": "string" }, "nullable": true },
-          "service_times": { "type": "array", "items": { "type": "integer" }, "nullable": true },
-          "service_languages": { "type": "array", "items": { "type": "string" }, "nullable": true },
-          "service_source_urls": { "type": "array", "items": { "type": "string" }, "nullable": true },
-          "ministry_names": { "type": "array", "items": { "type": "string" }, "nullable": true },
-          "ministries_json": { "type": "object", "nullable": true, "additionalProperties": true },
-          "belief_type": { "type": "string", "nullable": true },
-          "denomination": { "type": "string", "nullable": true },
-          "trinitarian": { "type": "boolean", "nullable": true },
-          "extraction_confidence": { "type": "number", "nullable": true },
-          "church_summary": { "type": "string", "nullable": true },
-          "is_weekly_church": { "type": "boolean", "nullable": true },
-          "campus_name": { "type": "string", "nullable": true },
-          "overarching_name": { "type": "string", "nullable": true },
-          "is_multi_campus": { "type": "boolean", "nullable": true },
-          "distance_m": { "type": "number", "nullable": true }
+          "church_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "gers_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "pipeline_status": {
+            "type": "string",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "locality": {
+            "type": "string",
+            "nullable": true
+          },
+          "region": {
+            "type": "string",
+            "nullable": true
+          },
+          "postal_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string",
+            "nullable": true
+          },
+          "logo_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "logo_width": {
+            "type": "integer",
+            "nullable": true
+          },
+          "logo_height": {
+            "type": "integer",
+            "nullable": true
+          },
+          "logo_aspect_ratio": {
+            "type": "number",
+            "nullable": true
+          },
+          "banner_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "banner_width": {
+            "type": "integer",
+            "nullable": true
+          },
+          "banner_height": {
+            "type": "integer",
+            "nullable": true
+          },
+          "banner_aspect_ratio": {
+            "type": "number",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "url_giving": {
+            "type": "string",
+            "nullable": true
+          },
+          "url_beliefs": {
+            "type": "string",
+            "nullable": true
+          },
+          "url_youtube": {
+            "type": "string",
+            "nullable": true
+          },
+          "url_facebook": {
+            "type": "string",
+            "nullable": true
+          },
+          "url_instagram": {
+            "type": "string",
+            "nullable": true
+          },
+          "url_tiktok": {
+            "type": "string",
+            "nullable": true
+          },
+          "url_campus": {
+            "type": "string",
+            "nullable": true
+          },
+          "url_live": {
+            "type": "string",
+            "nullable": true
+          },
+          "contact_emails": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "contact_phones": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "service_times": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "nullable": true
+          },
+          "service_languages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "service_source_urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "ministry_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "ministries_json": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true
+          },
+          "belief_type": {
+            "type": "string",
+            "nullable": true
+          },
+          "denomination": {
+            "type": "string",
+            "nullable": true
+          },
+          "trinitarian": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "extraction_confidence": {
+            "type": "number",
+            "nullable": true
+          },
+          "church_summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "is_weekly_church": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "campus_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "overarching_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "is_multi_campus": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "distance_m": {
+            "type": "number",
+            "nullable": true
+          }
         },
         "additionalProperties": false
       },
       "GeoJSONFeatureCollection": {
         "type": "object",
-        "required": ["type", "features"],
+        "required": [
+          "type",
+          "features"
+        ],
         "properties": {
-          "type": { "type": "string", "const": "FeatureCollection" },
+          "type": {
+            "type": "string",
+            "const": "FeatureCollection"
+          },
           "features": {
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["type", "geometry", "properties"],
+              "required": [
+                "type",
+                "geometry",
+                "properties"
+              ],
               "properties": {
-                "type": { "type": "string", "const": "Feature" },
+                "type": {
+                  "type": "string",
+                  "const": "Feature"
+                },
                 "geometry": {
-                  "type": ["object", "null"],
+                  "type": [
+                    "object",
+                    "null"
+                  ],
                   "properties": {
-                    "type": { "type": "string", "const": "Point" },
+                    "type": {
+                      "type": "string",
+                      "const": "Point"
+                    },
                     "coordinates": {
                       "type": "array",
                       "minItems": 2,
                       "maxItems": 2,
-                      "items": { "type": "number" }
+                      "items": {
+                        "type": "number"
+                      }
                     }
                   },
-                  "required": ["type", "coordinates"]
+                  "required": [
+                    "type",
+                    "coordinates"
+                  ]
                 },
                 "properties": {
                   "$ref": "#/components/schemas/ChurchV1"
